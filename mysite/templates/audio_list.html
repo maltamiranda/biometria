@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Audios
+{% endblock titulo %}
+
+{% block content %}
+	<h1>Audios</h1>
+
+	<a href="{% url 'upload_audio' %}" class="btn btn-primary btn-sm">Subir Audio</a>
+
+	<table class="table mb-0">
+		<thead>
+			<tr>
+				<th>Archivo</th>
+				<th>Abrir/Decargar</th>
+				<th>Proceso</th>
+				<th>Borrar</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for audio in audios %}
+			<tr>
+				<td>{{audio.file}}</td>
+				<td><a href="{{audio.file.url}}" class="btn btn-success btn-sm" target="_blank">Abrir Archivo</a></td>
+				<td><a href="analizar/{{audio.id}}" class="btn btn-info btn-sm">Analizar</a></td>
+				<td>
+					<form method="post" action="{% url 'delete_audio' audio.pk %}">
+						{% csrf_token %}
+						<button type="submit" class="btn btn-danger btn-sm" style='border-radius: 20px;'>Borrar</button>
+					</form>
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock content %}

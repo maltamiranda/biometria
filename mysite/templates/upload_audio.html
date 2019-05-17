@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Subida de Archivos
+{% endblock titulo %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+	<div class="row justify-content-center">
+		<div class="col-6">
+			<div class="card">
+				<div class="card-body">
+					<h1>Subir Archivos</h1>
+					<form method="post" enctype="multipart/form-data">
+						{% csrf_token %}
+						{{ form|crispy }}
+						<button type="submit" class="btn btn-success">Upload Audio</button>
+						<br><br><br><br><br>
+						<a href="{% url 'audio_list' %}" class="btn btn-primary btn-sm">Ir a listado</a>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+{% endblock content %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Analizar
+{% endblock titulo %}
+
+{% block javascript %}
+    <script>
+    function getval(sel)
+{
+    var funcion_id = sel.value;
+	
+	$.ajax({
+		url: '/ajax/cargar_funcion_descripcion/',
+		type: "POST",
+		data: {
+			'funcion_id': funcion_id,
+			'csrfmiddlewaretoken': '{{ csrf_token }}'
+			},
+		dataType: 'json',
+		success: function (data) {
+			//alert(data.descripcion);
+		}
+	})
+};
+  </script>
+{% endblock %}
+
+{% block content %}
+	<h1>Analizar</h1>
+	<h2>{{audio.file}}</h2>
+	
+	<div>
+		Funcion
+		<select  searchable="Search here.." onchange="getval(this);" >
+			{% for func in funcion %}
+				<option value="{{ func.id }}">{{ func.nombre }}</option>
+			{% endfor %}
+		</select>
+		<br>
+		{{funcion.0.descripcion}}
+	</div>
+	
+	<br>
+	<hr>
+	<br>
+	
+	<div>
+		Frase a Validar<br>
+		<input type="text" name="frase_validar" value="{{funcion.0.frase}}" class="md-form form-group w-75"><input type="text" readonly value="100%" ><br>
+	</div>
+	<br><br>
+	<br>
+	
+	<table class="table mb-0">
+		<thead>
+			<tr>
+				<th>Palabra</th>
+				<th>%</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for p in palabras %}
+			<tr>
+				<td>{{p.palabra}}</td>
+				<td>{{p.porcentaje}}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<div align="right">
+	<form method="post">
+		{% csrf_token %}
+		<input type="hidden" name="post_funcion" value="1">
+		<input type="hidden" name="post_audio" value={{audio.id}}>
+		<button type='submit' class='btn btn-primary btn-large btn-start text-right'>Procesar</button>
+	</form>
+	<button type='button' class='btn btn-primary btn-large btn-skip text-right'>Cancelar</button>
+	</div>
+{% endblock content %}

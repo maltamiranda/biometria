@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Reportes
+{% endblock titulo %}
+
+{% block content %}
+	<h1>Reportes</h1>
+	
+	<table class="table mb-0">
+		<thead>
+			<tr>
+				<th>Archivo</th>
+				<th>Funcion</th>
+				<th>Ponderacion</th>
+				<th>Creacion</th>
+				<th>Ver</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for reporte in reportes %}
+			<tr>
+				<td>{{reporte.nombre_audio}}</td>
+				<td>{{reporte.nombre}}</td>
+				<td align="right">{{reporte.ponderacion}} %</td>
+				<td>{{reporte.created}}</td>
+				<td><a href="{{reporte.id}}" class="btn btn-info btn-sm">Texto</a></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock content %}

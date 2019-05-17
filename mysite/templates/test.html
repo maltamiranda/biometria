@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Test
+{% endblock titulo %}
+
+{% block content %}
+
+  <br>
+  <br>
+
+  <div class="jumbotron">
+    <center>
+      <h1 class="mt-4">Prueba del Sistema</h1>
+    </center>
+    <hr class="my-4">
+    <center>
+    
+      <a type="button" href="{% url 'test' %}" class="small-box-footer bg-aqua my-2"><span class="mr-2 ml-2">.::Repetir::.</span>  </a>
+
+    </center>
+  </div>
+
+  
+  
+
+
+
+  <script type='text/javascript' src='/static/js/p5.js'></script>
+  <script type='text/javascript' src='/static/js/p5.dom.js'></script>
+  <script type='text/javascript' src='/static/js/p5.sound.js'></script>
+  <script type='text/javascript' src='/static/js/p5.speech.js'></script>
+  <script type='text/javascript' src='/static/js/main.js'></script>
+{% endblock content %}
