@@ -21,7 +21,7 @@ class Funcion(models.Model):
 		return self.nombre
 
 class Palabras(models.Model):
-	fk_funcion = models.ForeignKey(Funcion, related_name='funcion', on_delete=models.PROTECT)
+	fk_funcion = models.ForeignKey(Funcion, related_name='funcion', on_delete=models.CASCADE)
 	palabra = models.CharField(max_length=30, unique=True)
 	porcentaje = models.IntegerField(default=5)
 	
@@ -29,13 +29,13 @@ class Palabras(models.Model):
 		unique_together = (("fk_funcion", "palabra"),)
 		
 	def __str__(self):
-		return self.nombre
+		return self.palabra
 		
 class Reporte(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 	ponderacion = models.IntegerField()
-	fk_funcion = models.ForeignKey(Funcion, related_name='funcion_reporte', on_delete=models.PROTECT)
-	fk_audio = models.ForeignKey(Audio, related_name='audio', on_delete=models.PROTECT)
+	fk_funcion = models.ForeignKey(Funcion, related_name='funcion_reporte', on_delete=models.CASCADE)
+	fk_audio = models.ForeignKey(Audio, related_name='audio', on_delete=models.CASCADE)
 	canal_1 = models.CharField(max_length=255)
 	canal_2 = models.CharField(max_length=255)
 	nombre = models.CharField(max_length=255)
