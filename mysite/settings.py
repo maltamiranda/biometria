@@ -25,7 +25,7 @@ SECRET_KEY = '3_3b4^rx4&e37@7-j7dir*dff%b^hcyu7y+rtnrhhx33-$v#l$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['172.17.24.129']
+ALLOWED_HOSTS = ['172.17.24.129', '127.0.0.1']
 
 
 # Application definition
@@ -141,3 +141,5 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR,'static','static'),]
 
 #german
 #provincia
+
+#python3 manage.py runserver 172.17.24.129:8000

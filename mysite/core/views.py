@@ -11,6 +11,8 @@ from .forms import AudioForm
 from .models import Audio
 from .models import Funcion
 from .models import Reporte, Palabras
+from .transcriptor import Transcriptor
+from .ponderacion import Evaluador
 
 
 def home(request):
@@ -92,15 +94,28 @@ def analizar(request, pk):
 		
 		audio = Audio.objects.get(pk=audio_id)
 		funcion = Funcion.objects.get(pk=funcion_id)
+		palabras = Palabras.objects.filter(fk_funcion=1)
+		palabras_funcion = []
+		for m in palabras:
+			palabras_funcion.append((m.palabra, m.porcentaje))
+			
+		t = Transcriptor()
+		c1, c2 = t.parse(audio.file)
+
+		e = Evaluador()
+		ch1 = e.normalizar(c1) 
+		ch2 = e.normalizar(c2) 
+
+		suma = e.calificar(ch1, palabras_funcion, funcion.frase)
 		
-		
+		pdb.set_trace()
 		
 		reporte = Reporte.objects.create(
-			ponderacion = random.randint(1,101),
+			ponderacion = suma,
 			fk_funcion = funcion,
 			fk_audio = audio,
-			canal_1 = "prueba canal 1",
-			canal_2 = "prueba canal 2",
+			canal_1 = ch1,
+			canal_2 = ch2,
 			nombre = funcion.nombre,
 			nombre_audio = audio.file
 		)

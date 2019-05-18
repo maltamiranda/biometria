@@ -36,8 +36,8 @@ class Reporte(models.Model):
 	ponderacion = models.IntegerField()
 	fk_funcion = models.ForeignKey(Funcion, related_name='funcion_reporte', on_delete=models.CASCADE)
 	fk_audio = models.ForeignKey(Audio, related_name='audio', on_delete=models.CASCADE)
-	canal_1 = models.CharField(max_length=255)
-	canal_2 = models.CharField(max_length=255)
+	canal_1 = models.TextField()
+	canal_2 = models.TextField()
 	nombre = models.CharField(max_length=255)
 	nombre_audio = models.CharField(max_length=255)
 	
