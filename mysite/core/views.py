@@ -108,8 +108,6 @@ def analizar(request, pk):
 
 		suma = e.calificar(ch1, palabras_funcion, funcion.frase)
 		
-		pdb.set_trace()
-		
 		reporte = Reporte.objects.create(
 			ponderacion = suma,
 			fk_funcion = funcion,
