@@ -70,7 +70,7 @@ class Transcriptor(object):
                     t1 = t2
                     t2 = p_dec*30 + t1
                     skip = skip + 1
-                    newAudio = AudioSegment.from_wav(file_name)
+                    newAudio = AudioSegment.from_wav(nombre+'.'+extension)
                     newAudio = newAudio[t1*1000:t2*1000]
                     newfile = ('llamado_provincia_'+str(skip)+
                         '_'+str(t1)+'s_'+str(t2)+'s.wav')
@@ -80,7 +80,7 @@ class Transcriptor(object):
                 t1 = 0
                 t2 = p_dec*30 + t1
                 skip = skip + 1
-                newAudio = AudioSegment.from_wav(file_name)
+                newAudio = AudioSegment.from_wav(nombre+'.'+extension)
                 newAudio = newAudio[t1*1000:t2*1000]
                 newfile = ('llamado_provincia_'+str(skip)+'_'+
                     str(t1)+'s_'+str(t2)+'s.wav')
