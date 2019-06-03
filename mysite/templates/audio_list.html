@@ -21,8 +21,8 @@ Audios
 		<tbody>
 			{% for audio in audios %}
 			<tr>
-				<td>{{audio.file}}</td>
-				<td><a href="{{audio.file.url}}" class="btn btn-success btn-sm" target="_blank">Abrir Archivo</a></td>
+				<td>{{audio.idInteraccion}}</td>
+				<td><a href="/{{audio.file}}" class="btn btn-success btn-sm" target="_blank">Abrir Archivo</a></td>
 				<td><a href="analizar/{{audio.id}}" class="btn btn-info btn-sm">Analizar</a></td>
 				<td>
 					<form method="post" action="{% url 'delete_audio' audio.pk %}">

@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+{% block titulo %}
+Detalle funcion
+{% endblock titulo %}
+
+{% block javascript %}
+<script>
+	$(function () {
+	
+	var loadForm = function () {
+		var btn = $(this);
+		$.ajax({
+		url: btn.attr("data-url"),
+		//url: '/ajax/crear_palabra/{{funcion.id}}/',
+		type: 'get',
+		dataType: 'json',
+		beforeSend: function () {
+			$("#modal-palabra").modal("show");
+			},
+			success: function (data) {
+				$("#modal-palabra .modal-content").html(data.html_form);
+				
+			}
+		});
+	};
+	
+	var saveForm = function () {
+		var form = $(this);
+		$.ajax({
+			url: form.attr("action"),
+			data: form.serialize(),
+			type: form.attr("method"),
+			dataType: 'json',
+			success: function (data) {
+				if (data.form_is_valid) {
+					$("#tabla_palabra tbody").html(data.html_tabla_palabras);
+					$("#modal-palabra").modal("hide");
+					$("#id_funcionDetalle").html(data.html_funcion);
+				} else {
+					$("#modal-palabra .modal-content").html(data.html_form);
+				}
+			}
+		});
+		return false;
+	};
+	
+	
+	// Crear Palabra
+	$(".js-crear-palabra").click(loadForm);
+	$("#modal-palabra").on("submit", ".js-palabra-crear-form", saveForm);
+	
+	// Update Palabra
+	$("#tabla_palabra").on("click", ".js-update-palabra", loadForm);
+	$("#modal-palabra").on("submit", ".js-palabra-update-form", saveForm);
+	
+	//Borrar palabra
+	$("#tabla_palabra").on("click", ".js-borrar-palabra", loadForm);
+	$("#modal-palabra").on("submit", ".js-palabra-borrar-form", saveForm);
+	
+	});
+	
+</script>
+{% endblock %}
+
+
+{% block content %}
+	<h1>Detalle funcion</h1>
+	
+	<br>
+	<br>
+	<div>
+		{% include 'includes/funcion_parcial_detalle.html' %}
+	</div>
+	
+	<hr>
+	
+	<button type="button" class="btn btn-primary js-crear-palabra" data-url='/ajax/crear_palabra/{{funcion.id}}/'>
+		<span class="glyphicon glyphicon-plus"></span>
+		Agregar palabra
+	</button>
+	
+	<table class="table mb-0" id="tabla_palabra">
+		<thead>
+			<tr>
+				<th>Palabra</th>
+				<th>Porcentaje</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% include 'includes/palabras_parcial_tabla.html' %}
+		</tbody>
+	</table>
+	
+	<div class="modal fade" id="modal-palabra">
+		<div class="modal-dialog">
+			<div class="modal-content">
+			</div>
+		</div>
+	</div>
+	
+	<button type='button' class='btn btn-primary btn-large btn-skip text-right' data-url='/funciones_list/'>Cancelar</button>
+	</div>
+{% endblock content %}

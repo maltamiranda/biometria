@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Transcripcion
+{% endblock titulo %}
+
+{% block content %}
+	<h1>Transcripcion</h1>
+	
+	
+	<table class="table mb-0">
+		<thead>
+			<tr>
+				<th>Canal 1 / Operador</th>
+				<th>Canal 2 / Cliente</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>{{audio.canal_1}}</td>
+				<td>{{audio.canal_2}}</td>
+			</tr>
+		</tbody>
+	</table>
+	
+{% endblock content %}

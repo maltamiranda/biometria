@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Analisis
+{% endblock titulo %}
+{% block javascript %}
+<script>
+	$(document).ready(function() {
+		$('#id_tabla').DataTable();
+	});
+	
+	//<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+</script>
+{% endblock javascript %}
+{% block content %}
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" />
+	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+	<h1>Analisis</h1>
+	
+	<table id="id_tabla" class="table table-striped table-bordered">
+		<thead>
+			<tr>
+				<th>Nombre</th>
+				<th>Agente</th>
+				<th>Funcion</th>
+				<th>Ponderacion</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for campaña_fa in campaña_funcion_analisis %}
+			<tr>
+				<td>{{campaña_fa.fk_audio}}</td>
+				<td>{{campaña_fa.fk_audio.agente.nombre}}</td>
+				<td>{{campaña_fa.fk_funcion}}</td>
+				<td>{{campaña_fa.analisis}}</td>
+				<td><a href="{{campaña_fa.fk_audio.id}}" class="btn btn-info btn-sm">Transcripción a Texto</a></td>
+			</tr>
+			{% empty %}
+			<tr>
+				<td colspan="7" class="text-center bg-warning">Sin analisis</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+		<tfoot>
+			<tr>
+				<th>Nombre</th>
+				<th>Agente</th>
+				<th>Funcion</th>
+				<th>Ponderacion</th>
+			</tr>
+		</tfoot>
+	</table>
+{% endblock content %}

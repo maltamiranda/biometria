@@ -24,13 +24,35 @@ class Evaluador(object):
 	def calificar(self, cadena, dict_valor, frase):
 
 		suma = 0
-
-		valores = dict_valor
-
 		cadena = cadena.split(' ')
+		
+		temp_frase = []
+		
+		for p in frase:
+			if "/" in p:
+				temp = []
+				for t in p.split("/"):
+					temp.append(t)
+				temp_frase.append(temp)
+			elif "@" in p:
+				temp_frase.append(True)
+			else:
+				temp_frase.append(p)
 
 		for c in cadena:
-		    if c in valores:
-		        suma = suma + valores[c]
+			if c in dict_valor:
+				suma = suma + dict_valor[c]
+				del dict_valor[c]
 
+		return suma
+		
+	def ponderizar(self, canal1, palabras):
+	
+		suma = 0
+		
+		for p in palabras:
+			print (p.palabra.lower())
+			if p.palabra.lower() in canal1:
+				suma = suma + p.porcentaje
+		
 		return suma

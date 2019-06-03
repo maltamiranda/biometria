@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mysite.core',
     'crispy_forms',
+    'widget_tweaks'
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -129,8 +130,11 @@ LOGOUT_REDIRECT_URL = 'home'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 MEDIA_URL = '/media/'
+#MEDIA_URL = '/media/'
+
 STATIC_ROOT = os.path.join(BASE_DIR,'static','static-only')
 MEDIA_ROOT = os.path.join(BASE_DIR,'static','media')
+#MEDIA_ROOT = 'M:\FreeLance\Audios'
 STATICFILES_DIRS = [os.path.join(BASE_DIR,'static','static'),]
 
 #provincia

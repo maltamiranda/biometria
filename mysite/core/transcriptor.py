@@ -1,5 +1,5 @@
 import speech_recognition as sr
-import wavio
+import wavio, random
 import pdb
 from tinytag import TinyTag
 from pydub import AudioSegment

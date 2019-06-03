@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Crear funcion
+{% endblock titulo %}
+
+{% block javascript %}
+<script>
+var contador = 1
+var ponderacionTotal = 0
+var frase = ""
+var fraseList = []
+
+function validarPorcentaje(){
+	if (ponderacionTotal+parseInt(document.getElementById("id_porcentaje").value)<=100) {
+		document.getElementById('id_errorPonderacion').style.visibility = "hidden";
+		console.log("validarPorcentaje true");
+		return true;
+	} else {
+		document.getElementById('id_errorPonderacion').style.visibility = "visible";
+		console.log("validarPorcentaje false");
+		return false
+	}
+};
+function validarFrase(){
+	if (fraseList.indexOf(document.getElementById("id_palabra").value) >= 0) {
+		document.getElementById('id_errorPalabra').style.visibility = "visible";
+		console.log("validarPalabra false");
+		return false
+	} else {
+		document.getElementById('id_errorPalabra').style.visibility = "hidden";
+		console.log("validarPalabra true");
+		return true
+	}
+};
+
+function addPalabra(){
+	if (validarPorcentaje() && validarFrase()){
+		var palabra = document.getElementById("id_palabra").value;
+		var palabra_value = document.getElementById("id_palabra").value;
+		var porcentaje = document.getElementById("id_porcentaje").value;
+		var porcentaje_value = document.getElementById("id_porcentaje").value;
+		
+		palabra = '<input type="text" name = "palabra_'+contador+'" readonly value="'+palabra+'">';
+		porcentaje = '<input type="number" name="porcentaje_'+contador+'" min="1" max="100" value="'+porcentaje+'">';
+		
+		$("#id_tablaPalabras tr:last").after('<tr><td>'+palabra+'</td><td>'+porcentaje+'</td></tr>');
+		
+		
+		ponderacionTotal = parseInt(ponderacionTotal) + parseInt(porcentaje_value);
+		$('#id_ponderacionTotal').val(ponderacionTotal);
+		
+		if (contador == 1) {
+			frase = palabra_value;
+		} else {
+			frase = frase + " " + palabra_value;
+		}
+		
+		fraseList.push(palabra_value);
+		$('#id_frase_validar').val(frase);
+		
+		contador++;
+	}
+}
+</script>
+{% endblock %}
+{% block content %}
+	<h1>Crear funcion</h1>
+	
+	<br>
+	<hr>
+	<br>
+	<form method="post">
+		{% csrf_token %}
+		<div>
+			<h4>Nombre de la funcion</h4>
+			<input type="text" name="nombre" class="md-form form-group w-75"><br>
+			<h4>Descripcion de la funcion</h4>
+			<input type="text" name="descripcion" class="md-form form-group w-75">
+			<hr>
+		</div>
+		<div>
+			<h4>Frase a Validar</h4>
+			<input type="text" id="id_frase_validar" name="frase_validar" class="md-form form-group w-75">
+			<input type="number" id='id_ponderacionTotal' readonly value="0" >%
+		</div>
+		<div>
+		<br>
+			<h4>Ingrese palabra</h4>
+			<input type="text" id="id_palabra" name="frase_validar" class="md-form form-group w-60"><br>
+			<p class="text-danger" id="id_errorPalabra" style="visibility: hidden;">La palabra ya existe.</p>
+			<h4>Ponderacion</h4>
+			<input type="number" id="id_porcentaje" name="porcentaje_validar" class="md-form form-group w-15" min="1" max="100">
+			<p class="text-danger" id="id_errorPonderacion" style="visibility: hidden;">Supera el 100%.</p>
+			<input type='button' id="id_agregarPalabra" class='btn btn-primary btn-large btn-skip text-right' value="Agregar" onclick="addPalabra()">
+		</div>
+		<div>
+			
+		</div>
+		
+		<table class="table mb-0" id="id_tablaPalabras">
+			<thead>
+				<tr>
+					<th>Palabra</th>
+					<th>%</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+		<div align="right">
+			<button type='submit' class='btn btn-primary btn-large btn-start text-right'>Crear</button>
+	</form>
+	<button type='button' class='btn btn-primary btn-large btn-skip text-right'>Cancelar</button>
+	</div>
+{% endblock content %}

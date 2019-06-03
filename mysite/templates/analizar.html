@@ -20,6 +20,7 @@ Analizar
 		dataType: 'json',
 		success: function (data) {
 			//alert(data.descripcion);
+			document.getElementById("if_FuncSelected").innerHTML = data.descripcion;
 		}
 	})
 };
@@ -37,8 +38,8 @@ Analizar
 				<option value="{{ func.id }}">{{ func.nombre }}</option>
 			{% endfor %}
 		</select>
-		<br>
-		{{funcion.0.descripcion}}
+		<div id="if_FuncSelected"></div><br>
+		<button class="btn btn-primary btn-sm" >Subir Audio</button>
 	</div>
 	
 	<br>

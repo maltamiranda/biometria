@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+{% block titulo %}
+Crear funcion
+{% endblock titulo %}
+
+
+{% block content %}
+	<h1>Crear funcion</h1>
+	
+	<br>
+	<hr>
+	<br>
+	<form method="post" novalidate>
+		{% csrf_token %}
+		{% include 'includes/form.html' %}
+		<button type='submit' class='btn btn-primary btn-large btn-start text-right'>Crear</button>
+	</form>
+	<button type='button' class='btn btn-primary btn-large btn-skip text-right'>Cancelar</button>
+	</div>
+{% endblock content %}
