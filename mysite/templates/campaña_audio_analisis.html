@@ -9,7 +9,6 @@ Analisis
 		$('#id_tabla').DataTable();
 	});
 	
-	//<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
 </script>
 {% endblock javascript %}
 {% block content %}
@@ -17,14 +16,15 @@ Analisis
 	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
 	<h1>Analisis</h1>
-	
-	<table id="id_tabla" class="table table-striped table-bordered">
+	<div>
+	<table id="id_tabla" class="table table-striped table-bordered" style="width:100%">
 		<thead>
 			<tr>
 				<th>Nombre</th>
 				<th>Agente</th>
 				<th>Funcion</th>
 				<th>Ponderacion</th>
+				<th>Transcripción</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -51,4 +51,5 @@ Analisis
 			</tr>
 		</tfoot>
 	</table>
+	</div>
 {% endblock content %}

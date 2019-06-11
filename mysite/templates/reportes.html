@@ -11,20 +11,18 @@ Reportes
 		<thead>
 			<tr>
 				<th>Archivo</th>
-				<th>Funcion</th>
+				<th>Agente</th>
+				<th>Funciones</th>
 				<th>Ponderacion</th>
-				<th>Creacion</th>
-				<th>Ver</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for reporte in reportes %}
 			<tr>
-				<td>{{reporte.nombre_audio}}</td>
-				<td>{{reporte.nombre}}</td>
-				<td align="center">{{reporte.ponderacion}} %</td>
-				<td>{{reporte.created}}</td>
-				<td><a href="{{reporte.id}}" class="btn btn-info btn-sm">Transcripción a Texto</a></td>
+				<td>{{reporte.fk_audio}}</td>
+				<td>{{reporte.fk_audio.agente.nombre}}</td>
+				<td >{{reporte.fk_funcion}}</td>
+				<td align="center">{{reporte.analisis}} %</td>
 			</tr>
 			{% endfor %}
 		</tbody>

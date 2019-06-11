@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Funciones
+{% endblock titulo %}
+
+    <style type='text/css'>
+        body{
+            background-image: url('static/img/paisaje1.jpg');
+        }
+    </style>
+
+{% block content %}
+
+<div class="jumbotron" style='background-color: #FDF7F0;'>
+  
+
+  <h1 class="mt-2">Funciones</h1>
+  <div class="row mt-5">
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-aqua" style='border-radius: 15px;'>
+                <div class="inner">
+                  <h3>Test</h3>
+
+                  <p>Probar Sistema</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-ios-mic"></i>
+                </div>
+                <center>
+                  <a href='{% url 'test' %}' style="color: white;">Click aquí <i class="fa fa-arrow-circle-right"></i></a>
+                </center>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-green" style='border-radius: 15px;'>
+                <div class="inner">
+                  <h3>Up</h3>
+
+                  <p>Subir Archivos</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-ios-cloud-upload"></i>
+                </div>
+                <center>
+                  <a href='{% url 'upload_audio' %}' style="color: white;">Click aquí <i class="fa fa-arrow-circle-right"></i></a>
+                </center>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-yellow" style='border-radius: 15px;'>
+                <div class="inner">
+                  <h3>List</h3>
+
+                  <p>Lista Archivos</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-ios-list"></i>
+                </div>
+                <center>
+                  <a href="{% url 'audio_list' %}" style="color: white;">Click aquí <i class="fa fa-arrow-circle-right"></i></a>
+                </center>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-red" style='border-radius: 15px;'>
+                <div class="inner">
+                  <h3>Reports</h3>
+
+                  <p>Reportes</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-pie-graph"></i>
+                </div>
+                <center>
+                  <a href='{% url 'reportes' %}' style="color: white;">Click aquí <i class="fa fa-arrow-circle-right"></i></a>
+                </center>
+              </div>
+            </div>
+            <!-- ./col -->
+			<div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-yellow" style='border-radius: 15px;'>
+                <div class="inner">
+                  <h3>Campañas</h3>
+
+                  <p>Lista campañas</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-ios-list"></i>
+                </div>
+                <center>
+                  <a href="{% url 'campañas' %}" style="color: white;">Click aquí <i class="fa fa-arrow-circle-right"></i></a>
+                </center>
+              </div>
+            </div>
+            <!-- ./col -->
+			<div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-yellow" style='border-radius: 15px;'>
+                <div class="inner">
+                  <h3>Funciones</h3>
+
+                  <p>Gestionar funciones</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-ios-list"></i>
+                </div>
+                <center>
+                  <a href="{% url 'funciones_list' %}" style="color: white;">Click aquí <i class="fa fa-arrow-circle-right"></i></a>
+                </center>
+              </div>
+            </div>
+            <!-- ./col -->
+          </div>
+
+  <hr class="my-4">
+  <br><br>
+
+</div>
+
+
+{% endblock content %}

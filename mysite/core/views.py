@@ -16,77 +16,44 @@ from .models import Reporte, Palabras, Campaña, Campaña_funciones, Campaña_Au
 from .transcriptor import Transcriptor
 from .ponderacion import Evaluador
 
+#group required
+from django.utils import six
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import user_passes_test
+
+#decorator
+def group_required(group, login_url=None, raise_exception=False):
+    """
+    Decorator for views that checks whether a user has a group permission,
+    redirecting to the log-in page if necessary.
+    If the raise_exception parameter is given the PermissionDenied exception
+    is raised.
+    """
+    def check_perms(user):
+        if isinstance(group, six.string_types):
+            groups = (group, )
+        else:
+            groups = group
+        # First check if the user has the permission (even anon users)
+
+        if user.groups.filter(name__in=groups).exists():
+            return True
+        # In case the 403 handler should be called raise the exception
+        if raise_exception:
+            raise PermissionDenied
+        # As the last resort, show the login form
+        return False
+    return user_passes_test(check_perms, login_url=login_url)
 
 def home(request):
 	count = User.objects.count()
 	return 	render(request, 'home.html', {'count':count}
 		)
-
-def singup(request):
-	if request.method == 'POST':
-		form = UserCreationForm(request.POST)
-		if form.is_valid():
-			user = form.save()
-			redirect('home')
-	else:
-		form = UserCreationForm()
-	return render(request, 'registration/singup.html', {
-		'form' : form
-		})
 	
 @login_required
 def funciones(request):
 	return render(request, 'funciones.html')
 
-
-@login_required
-def test(request):
-	return render(request, 'test.html')
-
-@login_required
-def upload(request):
-    context = {}
-    if request.method == 'POST':
-        uploaded_file = request.FILES['document']
-        fs = FileSystemStorage()
-        name = fs.save(uploaded_file.name, uploaded_file)
-        context['url'] = fs.url(name)
-    return render(request, 'upload.html', context)
-
-@login_required
-def audio_list(request):
-	audios = Audio.objects.all()
-	return render(request, 'audio_list.html', {'audios':audios})
-
-@login_required
-def upload_audio(request):
-	if request.method == 'POST':
-		form = AudioForm(request.POST, request.FILES)
-		if form.is_valid():
-			form.save()
-			return redirect('audio_list')
-	else:
-		form = AudioForm()
-	return render(request, 'upload_audio.html', {'form':form})
-
-
-def delete_audio(request, pk):
-	if request.method == 'POST':
-		audio = Audio.objects.get(pk=pk)
-		audio.delete()
-		
-	return redirect('audio_list')
-
-@login_required
-def download(request):
-	return render(request, 'download.html')
-
-
-	
-@login_required
-def secret_page(request):
-	return render(request, 'secret_page.html')
-	
 
 def background_analisis(audio, funcion, palabras):
 	print ("inicio de analisis de" + str(audio.file))
@@ -143,7 +110,7 @@ def analizar(request, pk):
 	
 @login_required
 def reportes(request):
-	reportes = Reporte.objects.all()
+	reportes = Campaña_Audio_Analisis.objects.all()
 	return render(request, 'reportes.html', {'reportes':reportes})
 	
 @login_required
@@ -151,12 +118,14 @@ def reporte_generado(request, pk):
 	reporte = Reporte.objects.get(pk=pk)
 	return render(request, 'reporte_generado.html', {'reporte':reporte})
 
-@login_required
+@group_required(('Auditor Funciones', '/accounts/login/'))
+#@login_required
 def funciones_list(request):
 	funcion = Funcion.objects.all()
 	return render(request, 'funciones_list.html', {"funciones":funcion})
 
-@login_required
+@group_required(('Auditor Funciones', '/accounts/login/'))
+#@login_required
 def funciones_crear(request):
 	if request.method == 'POST':
 		form = FuncionForm(request.POST)
@@ -167,16 +136,14 @@ def funciones_crear(request):
 		form = FuncionForm()
 		return render(request, 'funciones_crear.html', {'form':form})
 
-
-		
-@login_required
+@group_required(('Auditor Funciones', '/accounts/login/'))
+#@login_required
 def funciones_detalle(request, pk):
 	funcion = Funcion.objects.get(pk=pk)
 	palabras = Palabras.objects.filter(fk_funcion=funcion.id)
 	return render(request,'funciones_detalle.html',{'funcion':funcion,'palabras':palabras})
 
-	
-@login_required
+@group_required(('Auditor Funciones', '/accounts/login/'))
 def guardar_palabra_form(request,pk_funcion, form, template_name):
 	data = dict()
 	if request.method == 'POST':
@@ -206,7 +173,7 @@ def actualizarPonderacionFuncion(pk_funcion):
 		funcion.estado = 2
 	funcion.save()
 	
-@login_required
+@group_required(('Auditor Funciones', '/accounts/login/'))
 def crear_palabra(request, pk_funcion):
 	data = dict()
 	if request.method == 'POST':
@@ -215,8 +182,9 @@ def crear_palabra(request, pk_funcion):
 			form.save()
 			data['form_is_valid'] = True
 			palabras = Palabras.objects.filter(fk_funcion=pk_funcion)
+			funcion = Funcion.objects.get(pk=pk_funcion)
 			data['html_tabla_palabras'] = render_to_string('includes/palabras_parcial_tabla.html', {
-				'palabras': palabras})
+				'palabras': palabras, 'funcion':funcion})
 			actualizarPonderacionFuncion(pk_funcion)
 		else:
 			data['form_is_valid'] = False
@@ -232,7 +200,7 @@ def crear_palabra(request, pk_funcion):
 	
 	
 	
-@login_required
+@group_required(('Auditor Funciones', '/accounts/login/'))
 def editar_palabra(request, pk_funcion, pk_palabra):
 	data = dict()
 	palabra = get_object_or_404(Palabras, pk=pk_palabra)
@@ -242,8 +210,9 @@ def editar_palabra(request, pk_funcion, pk_palabra):
 			form.save()
 			data['form_is_valid'] = True
 			palabras = Palabras.objects.filter(fk_funcion=pk_funcion)
+			funcion = Funcion.objects.get(pk=pk_funcion)
 			data['html_tabla_palabras'] = render_to_string('includes/palabras_parcial_tabla.html', {
-				'palabras': palabras})
+				'palabras': palabras, 'funcion':funcion})
 			actualizarPonderacionFuncion(pk_funcion)
 	else:
 		form = PalabraForm(fk_funcion=pk_funcion, instance=palabra)
@@ -256,7 +225,7 @@ def editar_palabra(request, pk_funcion, pk_palabra):
 	
 	return JsonResponse(data)
 	
-@login_required
+@group_required(('Auditor Funciones', '/accounts/login/'))
 def borrar_palabra(request,pk_funcion,pk_palabra):
 	data = dict()
 	palabra = get_object_or_404(Palabras, pk=pk_palabra)
@@ -264,8 +233,9 @@ def borrar_palabra(request,pk_funcion,pk_palabra):
 		palabra.delete()
 		data['form_is_valid'] = True  # This is just to play along with the existing code
 		palabras = Palabras.objects.filter(fk_funcion=pk_funcion)
+		funcion = Funcion.objects.get(pk=pk_funcion)
 		data['html_tabla_palabras'] = render_to_string('includes/palabras_parcial_tabla.html', {
-				'palabras': palabras})
+				'palabras': palabras, 'funcion':funcion})
 		actualizarPonderacionFuncion(pk_funcion)
 	else:
 		context = {'palabra':palabra,'pk_funcion':pk_funcion,'pk_palabra':pk_palabra}
@@ -287,12 +257,12 @@ def cargar_funcion_descripcion(request):
 	return JsonResponse(data)
 	
 	
-@login_required
+@group_required(('Auditor Campañas', '/accounts/login/'))
 def campañas(request):
 	campañas = Campaña.objects.all()
 	return render(request, 'campaña_list.html', {'campañas':campañas})
 	
-@login_required
+@group_required(('Auditor Campañas', '/accounts/login/'))
 def campañas_detalle(request, pk_campaña):
 	campaña = get_object_or_404(Campaña, pk=pk_campaña)
 	campaña_funciones = Campaña_funciones.objects.filter(fk_campaña=campaña)
@@ -312,7 +282,7 @@ def background_analisis_campaña(campaña, campaña_funcion_creada):
 			#analisis = random.randint(0, 100)
 			Campaña_Audio_Analisis.objects.create(analisis=suma, fk_audio=a, fk_campaña_funcion=campaña_funcion_creada, fk_campaña=campaña, fk_funcion=f)
 	
-@login_required
+@group_required(('Auditor Campañas', '/accounts/login/'))
 def capañas_detalle_crear(request, pk_campaña):
 	if request.method == 'POST':
 		form = Campaña_funcionesForm(request.POST,fk_campaña=pk_campaña)
@@ -333,21 +303,21 @@ def capañas_detalle_crear(request, pk_campaña):
 		form = Campaña_funcionesForm(fk_campaña=pk_campaña)
 		return render(request, 'campaña_detalle_crear.html', {'form':form})
 		
-@login_required
+@group_required(('Auditor Campañas', '/accounts/login/'))
 def campaña_funcion_analisis(request, pk_campaña, pk_campaña_funcion):
 	campaña =get_object_or_404(Campaña, pk=pk_campaña)
 	campaña_funcion = get_object_or_404(Campaña_funciones, pk=pk_campaña_funcion)
 	campaña_funcion_analisis = Campaña_Audio_Analisis.objects.filter(fk_campaña=campaña,fk_campaña_funcion=campaña_funcion)
 	return render(request, 'campaña_audio_analisis.html',{'campaña_funcion_analisis':campaña_funcion_analisis})
-	
+
+@group_required(('Auditor Funciones', '/accounts/login/'))
 def funciones_borrar(request, pk):
 	if request.method == 'POST':
 		funcion = Funcion.objects.get(pk=pk)
 		funcion.delete()
-		
 	return redirect('funciones_list')
 	
-@login_required
+@group_required(('Auditor Campañas', '/accounts/login/'))
 def transcripcion(request, pk_campaña, pk_campaña_funcion, pk_audio):
 	audio = Audio.objects.get(pk=pk_audio)
 	return render(request, 'transcripcion.html', {'audio':audio})

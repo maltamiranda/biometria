@@ -74,7 +74,7 @@ class Reporte(models.Model):
 	
 class Campaña_funciones(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
-	funciones = models.ManyToManyField('Funcion')
+	funciones = models.ManyToManyField('Funcion',limit_choices_to = {'estado': 1})
 	fk_campaña = models.ForeignKey(Campaña, related_name='fk_campaña', on_delete=models.CASCADE, default=None)
 	
 	def getFunciones(self):
