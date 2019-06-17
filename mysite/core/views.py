@@ -108,10 +108,10 @@ def analizar(request, pk):
 												'funcion':funcion,
 												'palabras':palabras,})
 	
-@login_required
+@group_required(('Auditor Reportes', '/accounts/login/'))
 def reportes(request):
-	reportes = Campaña_Audio_Analisis.objects.all()
-	return render(request, 'reportes.html', {'reportes':reportes})
+	campaña_funcion_analisis = Campaña_Audio_Analisis.objects.all()
+	return render(request, 'reportes.html', {'campaña_funcion_analisis':campaña_funcion_analisis})
 	
 @login_required
 def reporte_generado(request, pk):
@@ -321,3 +321,6 @@ def funciones_borrar(request, pk):
 def transcripcion(request, pk_campaña, pk_campaña_funcion, pk_audio):
 	audio = Audio.objects.get(pk=pk_audio)
 	return render(request, 'transcripcion.html', {'audio':audio})
+	
+def reproducir(request, pk):
+	return render(request,'reproducir.html')
