@@ -11,18 +11,24 @@ Reportes
 		});
 		
 		$('.expandir').click(function() {
-			var audio = $(this.innerHTML);
+			var $elemento = $(this);
+			var $registro = $(this).closest('tr');
 			
-			$.ajax({
-				url: '/ajax/reportes/detalleAnalisis/',
-				data: {'audio':audio},
-				dataType: 'json',
-				processData: false,
-				success: function (data) {
-					console.log(data);
-				}
-			});
-					
+			if ($elemento.hasClass("mostrar")){
+				$elemento.removeClass('mostrar');
+				$registro.next().remove();
+			}
+			else {
+				$.ajax({
+					url: '/ajax/reportes/detalleAnalisis/'+ this.innerHTML ,
+					dataType: 'json',
+					success: function (data) {
+						console.log(data);
+						$registro.after(data.html_funcion);
+						$elemento.addClass("mostrar")
+					}
+				});
+			}
 		});
 	})
 </script>
@@ -72,4 +78,5 @@ Reportes
 		</tfoot>
 	</table>
 	</div>
+	<a href="javascript:history.go(-1)" class="btn btn-default">Cancel</a>
 {% endblock content %}

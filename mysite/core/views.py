@@ -127,15 +127,11 @@ def reportes(request):
 		campañasList.append({'analisis':round(temp[0]/temp[2],1),'nombreAgente':temp[1], 'audio':key, 'fecha':temp[3]})
 	return render(request, 'reportes.html', {'campañas':campañasList})
 	
-def detalleAnalisis(request):
-	print (request)
-	audio = request.GET['data']
-	print ("Request")
-	print (audio)
-	a = get_object_or_404(Audio, pk=audio)
+def detalleAnalisis(request, audio):
+	data = dict()
+	a = get_object_or_404(Audio, idInteraccion=audio)
 	print (a)
 	audios = Campaña_Audio_Analisis.objects.filter(fk_audio_id=a.id)
-	print ("AUDIOS\n" + audios)
 	
 	data['html_funcion'] = render_to_string('includes/detalleAnalisis_parcial.html',{'audios':audios},request)
 	
