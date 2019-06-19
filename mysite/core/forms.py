@@ -17,15 +17,8 @@ class FuncionForm(forms.ModelForm):
 class PalabraForm(forms.ModelForm):
 	class Meta:
 		model = Palabras
-		fields = ('palabra','porcentaje', "fk_funcion")
-	
-	#def is_valid(self,):
-	#	return not Palabras.objects.filter(palabra=self.fields['palabra'],fk_funcion=self.fk_funcion).exists()
-		
-	def __init__(self, *args, **kwargs):
-		fk_funcion = kwargs.pop('fk_funcion','')
-		super(PalabraForm, self).__init__(*args, **kwargs)
-		self.fields['fk_funcion']=forms.ModelChoiceField(queryset=Funcion.objects.filter(id=fk_funcion))
+		fields = ('palabra','porcentaje','fk_funcion')
+		widgets = {'fk_funcion': forms.HiddenInput()}
 		
 class Campaña_funcionesForm(forms.ModelForm):
 	class Meta:

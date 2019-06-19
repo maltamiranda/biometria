@@ -46,11 +46,11 @@ class Funcion(models.Model):
 
 class Palabras(models.Model):
 	fk_funcion = models.ForeignKey(Funcion, related_name='funcion', on_delete=models.CASCADE)
-	palabra = models.CharField(max_length=30, unique=True)
+	palabra = models.CharField(max_length=30)#, unique=True)
 	porcentaje = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
 	
 	class Meta:
-		unique_together = (("fk_funcion", "palabra"),)
+		unique_together = ("fk_funcion", "palabra"),
 		
 	def __str__(self):
 		return self.palabra

@@ -201,7 +201,11 @@ def actualizarPonderacionFuncion(pk_funcion):
 def crear_palabra(request, pk_funcion):
 	data = dict()
 	if request.method == 'POST':
-		form = PalabraForm(request.POST,fk_funcion=pk_funcion)
+		form = PalabraForm(request.POST,initial={'fk_funcion':pk_funcion})
+		print (form)
+		print (form.instance.fk_funcion)
+		form.instance.fk_funcion=Funcion.objects.get(id=pk_funcion)
+		print (form.instance.fk_funcion)
 		if form.is_valid():
 			form.save()
 			data['form_is_valid'] = True
@@ -213,7 +217,7 @@ def crear_palabra(request, pk_funcion):
 		else:
 			data['form_is_valid'] = False
 	else:
-		form = PalabraForm(fk_funcion=pk_funcion)
+		form = PalabraForm(initial={'fk_funcion':pk_funcion})
 	context = {'form':form,'pk_funcion':pk_funcion}
 	data['html_form'] = render_to_string('includes/palabra_parcial_crear.html',context,request)
 	
@@ -229,7 +233,7 @@ def editar_palabra(request, pk_funcion, pk_palabra):
 	data = dict()
 	palabra = get_object_or_404(Palabras, pk=pk_palabra)
 	if request.method == 'POST':
-		form = PalabraForm(request.POST,fk_funcion=pk_funcion, instance=palabra)
+		form = PalabraForm(request.POST, instance=palabra)
 		if form.is_valid():
 			form.save()
 			data['form_is_valid'] = True
@@ -239,7 +243,7 @@ def editar_palabra(request, pk_funcion, pk_palabra):
 				'palabras': palabras, 'funcion':funcion})
 			actualizarPonderacionFuncion(pk_funcion)
 	else:
-		form = PalabraForm(fk_funcion=pk_funcion, instance=palabra)
+		form = PalabraForm(instance=palabra)
 	
 	context = {'form':form,'pk_funcion':pk_funcion,'pk_palabra':pk_palabra}
 	data['html_form'] = render_to_string('includes/palabra_parcial_update.html',context,request)
