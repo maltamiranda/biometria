@@ -17,6 +17,7 @@ urlpatterns = [
     path('ajax/editar_palabra/<int:pk_funcion>/<int:pk_palabra>', views.editar_palabra, name='editar_palabra'),
     path('ajax/borrar_palabra/<int:pk_funcion>/<int:pk_palabra>', views.borrar_palabra, name='borrar_palabra'),
     path('ajax/reportes/detalleAnalisis/<str:audio>', views.detalleAnalisis, name='detalleAnalisis'),
+	path('ajax/cambiarEstado/<int:pk_funcion>', views.cambiarEstado, name='cambiarEstado'),
     #path('audios/analizar/<int:pk>/', views.analizar, name='analizar'),
     #path('test/', views.test, name='test'),
     #path('audios/', views.audio_list, name='audio_list'),

@@ -354,3 +354,30 @@ def transcripcion(request, pk_campaña, pk_campaña_funcion, pk_audio):
 	
 def reproducir(request, pk):
 	return render(request,'reproducir.html')
+	
+def cambiarEstado(request, pk_funcion):
+	data = dict()
+	funcion = Funcion.objects.get(id=pk_funcion)
+	if funcion.estado == 1:
+		funcion.estado = 2
+		funcion.save()
+		data['estado']='disable'
+		data['is_valid']=True
+	else:
+		if funcion.ponderacion == 100:
+			funcion.estado = 1
+			funcion.save()
+			data['estado']='enable'
+			data['is_valid']=True
+		else:
+			data['is_valid']=False
+		
+	return JsonResponse(data)
+	
+	
+	
+
+
+
+
+

@@ -10,11 +10,36 @@ Detalle funcion
 <script>
 	$(function () {
 	
+	$(document).ready(function() {
+		if ($('#id_estado').text() == 'Habilitado') {
+			$('#id_barraEstado').bootstrapToggle('on');
+		} else {
+			$('#id_barraEstado').bootstrapToggle('off');
+		};
+	});
+	
+	var cambiarEstado = function (estado) {
+		var funcion = window.location.pathname.split("/").pop()
+		console.log("salto evento")
+		$.ajax({
+			url: '/ajax/cambiarEstado/' + funcion,
+			type: 'get',
+			dataType: 'json',
+			success: function (data) {
+				if (data.is_valid) {
+					$('#id_barraEstado').bootstrapToggle(data.estado);
+					console.log("OK")
+				} else {
+					console.log("Fallo")
+				}
+			}
+		});
+	};
+	
 	var loadForm = function () {
 		var btn = $(this);
 		$.ajax({
 		url: btn.attr("data-url"),
-		//url: '/ajax/crear_palabra/{{funcion.id}}/',
 		type: 'get',
 		dataType: 'json',
 		beforeSend: function () {
@@ -75,6 +100,7 @@ Detalle funcion
 	<br>
 	<div>
 		{% include 'includes/funcion_parcial_detalle.html' %}
+	<div><input type="checkbox" data-toggle="toggle" data-on="Habilitado" data-off="Deshabilitado" id="id_barraEstado" onclick="cambiarEstado()"></div>
 	</div>
 	
 	<hr>
