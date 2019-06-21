@@ -191,10 +191,9 @@ def actualizarPonderacionFuncion(pk_funcion):
 		pond = pond + p.porcentaje
 		
 	funcion.ponderacion = pond
-	if pond == 100:
-		funcion.estado = 1
-	else:
+	if pond != 100:
 		funcion.estado = 2
+	
 	funcion.save()
 	
 @group_required(('Auditor Funciones', '/accounts/login/'))
@@ -361,14 +360,14 @@ def cambiarEstado(request, pk_funcion):
 	if funcion.estado == 1:
 		funcion.estado = 2
 		funcion.save()
-		data['estado']='disable'
 		data['is_valid']=True
+		data['html_funcion'] = render_to_string('includes/funcion_parcial_detalle.html',{'funcion':funcion},request)
 	else:
 		if funcion.ponderacion == 100:
 			funcion.estado = 1
 			funcion.save()
-			data['estado']='enable'
 			data['is_valid']=True
+			data['html_funcion'] = render_to_string('includes/funcion_parcial_detalle.html',{'funcion':funcion},request)
 		else:
 			data['is_valid']=False
 		

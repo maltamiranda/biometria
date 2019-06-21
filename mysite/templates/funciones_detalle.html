@@ -11,23 +11,31 @@ Detalle funcion
 	$(function () {
 	
 	$(document).ready(function() {
-		if ($('#id_estado').text() == 'Habilitado') {
-			$('#id_barraEstado').bootstrapToggle('on');
-		} else {
-			$('#id_barraEstado').bootstrapToggle('off');
-		};
+		checkBarraEstado()
 	});
 	
-	var cambiarEstado = function (estado) {
+	var checkBarraEstado = function() {
+		if ($('#id_ponderacion').text() == '100'){
+			$('#id_barraEstado').bootstrapToggle('enable');
+			if ($('#id_estado').text() == 'Habilitado') {
+				$('#id_barraEstado').bootstrapToggle('on');
+			} else {
+				$('#id_barraEstado').bootstrapToggle('off');
+			};
+		} else {
+			$('#id_barraEstado').bootstrapToggle('disable');
+		}
+	};
+	
+	var cambiarEstado = function () {
 		var funcion = window.location.pathname.split("/").pop()
-		console.log("salto evento")
 		$.ajax({
 			url: '/ajax/cambiarEstado/' + funcion,
 			type: 'get',
 			dataType: 'json',
 			success: function (data) {
 				if (data.is_valid) {
-					$('#id_barraEstado').bootstrapToggle(data.estado);
+					$("#id_funcionDetalle").html(data.html_funcion);
 					console.log("OK")
 				} else {
 					console.log("Fallo")
@@ -85,6 +93,9 @@ Detalle funcion
 	$("#tabla_palabra").on("click", ".js-borrar-palabra", loadForm);
 	$("#modal-palabra").on("submit", ".js-palabra-borrar-form", saveForm);
 	
+	// Cambiar estado de la funcion
+	$('#id_barraEstado').change(cambiarEstado)
+	
 	});
 	
 </script>
@@ -100,7 +111,7 @@ Detalle funcion
 	<br>
 	<div>
 		{% include 'includes/funcion_parcial_detalle.html' %}
-	<div><input type="checkbox" data-toggle="toggle" data-on="Habilitado" data-off="Deshabilitado" id="id_barraEstado" onclick="cambiarEstado()"></div>
+	<div><input type="checkbox" data-toggle="toggle" data-on="Habilitado" data-off="Deshabilitado" id="id_barraEstado"></div>
 	</div>
 	
 	<hr>
@@ -129,6 +140,6 @@ Detalle funcion
 		</div>
 	</div>
 	
-	<button type='button' class='btn btn-primary btn-large btn-skip text-right' data-url='/funciones_list/'>Cancelar</button>
+	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>
 	</div>
 {% endblock content %}
