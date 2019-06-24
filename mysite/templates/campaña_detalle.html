@@ -4,8 +4,16 @@
 {{campaña_nombre}}
 {% endblock titulo %}
 
+{% block breadcrumb %}
+	<ol class="breadcrumb my-4">
+		
+			<li class="breadcrumb-item"><a href="{% url 'campañas' %}">Campañas</a></li>
+			<li class="breadcrumb-item active">{{campaña_nombre}}</li>
+		
+	</ol>
+{% endblock %}
+
 {% block content %}
-	<h1>{{campaña_nombre}}</h1>
 	
 	<a href="/campañas/{{campaña_id}}/crear" class="btn btn-primary btn-sm">Nuevo analisis</a>
 	

@@ -4,9 +4,13 @@
 Audios
 {% endblock titulo %}
 
-{% block content %}
-	<h1>Funciones</h1>
+{% block breadcrumb %}
+	<ol class="breadcrumb my-4 bg-dark">
+		<li class="breadcrumb-item active"><h5>Funciones</h5></li>
+	</ol>
+{% endblock %}
 
+{% block content %}
 	<a href="{% url 'funciones_crear' %}" class="btn btn-primary btn-sm">Crear Funcion</a>
 
 	<table class="table mb-0">

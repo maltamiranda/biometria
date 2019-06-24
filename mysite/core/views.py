@@ -337,7 +337,9 @@ def campaña_funcion_analisis(request, pk_campaña, pk_campaña_funcion):
 	campaña =get_object_or_404(Campaña, pk=pk_campaña)
 	campaña_funcion = get_object_or_404(Campaña_funciones, pk=pk_campaña_funcion)
 	campaña_funcion_analisis = Campaña_Audio_Analisis.objects.filter(fk_campaña=campaña,fk_campaña_funcion=campaña_funcion)
-	return render(request, 'campaña_audio_analisis.html',{'campaña_funcion_analisis':campaña_funcion_analisis})
+	return render(request, 'campaña_audio_analisis.html',{'campaña_funcion_analisis':campaña_funcion_analisis,
+		'campaña_funcion':campaña_funcion,
+		'campaña':campaña})
 
 @group_required(('Auditor Funciones', '/accounts/login/'))
 def funciones_borrar(request, pk):
@@ -349,7 +351,10 @@ def funciones_borrar(request, pk):
 @group_required(('Auditor Campañas', '/accounts/login/'))
 def transcripcion(request, pk_campaña, pk_campaña_funcion, pk_audio):
 	audio = Audio.objects.get(pk=pk_audio)
+	c1 = audio.canal_1
+	#for palabra in Palabras.objects.filter()
 	return render(request, 'transcripcion.html', {'audio':audio})
+	
 	
 def reproducir(request, pk):
 	return render(request,'reproducir.html')

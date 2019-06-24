@@ -3,6 +3,17 @@
 {% block titulo %}
 Analisis
 {% endblock titulo %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb my-4 bg-dark">
+		
+			<li class="breadcrumb-item"><a href="{% url 'campañas' %}">Campañas</a></li>
+			<li class="breadcrumb-item"><a href="/campañas/{{campaña.pk}}">{{campaña.nombre}}</a></li>
+			<li class="breadcrumb-item active">{{campaña_funcion.created}}</li>
+		
+	</ol>
+{% endblock %}
+
 {% block javascript %}
 <script>
 	$(document).ready(function() {
@@ -15,7 +26,6 @@ Analisis
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" />
 	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-	<h1>Analisis</h1>
 	<div>
 	<table id="id_tabla" class="table table-striped table-bordered" style="width:100%">
 		<thead>
@@ -51,5 +61,6 @@ Analisis
 			</tr>
 		</tfoot>
 	</table>
+	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>
 	</div>
 {% endblock content %}

@@ -6,6 +6,13 @@
 Detalle funcion
 {% endblock titulo %}
 
+{% block breadcrumb %}
+	<ol class="breadcrumb my-4 bg-dark">
+		<li class="breadcrumb-item"><a href="{% url 'funciones_list' %}">Funciones</a></li>
+		<li class="breadcrumb-item active">{{funcion.nombre}}</li>
+	</ol>
+{% endblock %}
+
 {% block javascript %}
 <script>
 	$(function () {
