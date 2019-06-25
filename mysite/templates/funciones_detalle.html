@@ -17,8 +17,11 @@ Detalle funcion
 <script>
 	$(function () {
 	
+	var flag = false;
+	
 	$(document).ready(function() {
-		checkBarraEstado()
+		checkBarraEstado();
+		flag=true;
 	});
 	
 	var checkBarraEstado = function() {
@@ -35,20 +38,22 @@ Detalle funcion
 	};
 	
 	var cambiarEstado = function () {
-		var funcion = window.location.pathname.split("/").pop()
-		$.ajax({
-			url: '/ajax/cambiarEstado/' + funcion,
-			type: 'get',
-			dataType: 'json',
-			success: function (data) {
-				if (data.is_valid) {
-					$("#id_funcionDetalle").html(data.html_funcion);
-					console.log("OK")
-				} else {
-					console.log("Fallo")
+		if (flag){
+			var funcion = window.location.pathname.split("/").pop()
+			$.ajax({
+				url: '/ajax/cambiarEstado/' + funcion,
+				type: 'get',
+				dataType: 'json',
+				success: function (data) {
+					if (data.is_valid) {
+						$("#id_funcionDetalle").html(data.html_funcion);
+						console.log("OK")
+					} else {
+						console.log("Fallo")
+					}
 				}
-			}
-		});
+			});
+		}
 	};
 	
 	var loadForm = function () {
@@ -76,9 +81,12 @@ Detalle funcion
 			dataType: 'json',
 			success: function (data) {
 				if (data.form_is_valid) {
+					flag = false;
 					$("#tabla_palabra tbody").html(data.html_tabla_palabras);
 					$("#modal-palabra").modal("hide");
 					$("#id_funcionDetalle").html(data.html_funcion);
+					checkBarraEstado();
+					flag=true;
 				} else {
 					$("#modal-palabra .modal-content").html(data.html_form);
 				}

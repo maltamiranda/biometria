@@ -21,6 +21,7 @@ class PalabraForm(forms.ModelForm):
 		widgets = {'fk_funcion': forms.HiddenInput()}
 		
 class Campaña_funcionesForm(forms.ModelForm):
+	widgets={'funciones':forms.CheckboxSelectMultiple}
 	class Meta:
 		model = Campaña_funciones
 		fields = ('funciones','fk_campaña')
@@ -29,3 +30,4 @@ class Campaña_funcionesForm(forms.ModelForm):
 		fk_campaña = kwargs.pop('fk_campaña','')
 		super(Campaña_funcionesForm, self).__init__(*args, **kwargs)
 		self.fields['fk_campaña']=forms.ModelChoiceField(queryset=Campaña.objects.filter(id=fk_campaña))
+        
