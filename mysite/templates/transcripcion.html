@@ -4,15 +4,21 @@
 Transcripcion
 {% endblock titulo %}
 
+{% block breadcrumb %}
+	<ol class="breadcrumb my-4 bg-dark">
+		<li class="breadcrumb-item"><a href="{% url 'campañas' %}">Campañas</a></li>
+		<li class="breadcrumb-item"><a href="/campañas/{{campaña.pk}}">{{campaña.nombre}}</a></li>
+		<li class="breadcrumb-item"><a href="/campañas/{{campaña.pk}}/{{campaña_funcion.id}}">{{campaña_funcion.created}}</a></li>
+		<li class="breadcrumb-item active">{{audio.idInteraccion}} - Transcripcion</li>
+	</ol>
+{% endblock %}
+
 {% block content %}
-	<h1>Transcripcion</h1>
-	
-	
 	<table class="table mb-0">
 		<thead>
 			<tr>
-				<th>Canal 1 / Operador</th>
-				<th>Canal 2 / Cliente</th>
+				<th style="width: 50%">Canal 1 / Operador</th>
+				<th style="width: 50%">Canal 2 / Cliente</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -22,5 +28,5 @@ Transcripcion
 			</tr>
 		</tbody>
 	</table>
-	
+	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>
 {% endblock content %}

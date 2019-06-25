@@ -351,9 +351,13 @@ def funciones_borrar(request, pk):
 @group_required(('Auditor Campañas', '/accounts/login/'))
 def transcripcion(request, pk_campaña, pk_campaña_funcion, pk_audio):
 	audio = Audio.objects.get(pk=pk_audio)
+	campaña =get_object_or_404(Campaña, pk=pk_campaña)
+	campaña_funcion = get_object_or_404(Campaña_funciones, pk=pk_campaña_funcion)
 	c1 = audio.canal_1
-	#for palabra in Palabras.objects.filter()
-	return render(request, 'transcripcion.html', {'audio':audio})
+	#for palabra in Palabras.objects.filter(fk_funcion=)
+	return render(request, 'transcripcion.html', {'audio':audio,
+			'campaña_funcion':campaña_funcion,
+			'campaña':campaña})
 	
 	
 def reproducir(request, pk):
@@ -380,6 +384,18 @@ def cambiarEstado(request, pk_funcion):
 	
 	
 	
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

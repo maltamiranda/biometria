@@ -6,18 +6,19 @@
 Crear funcion
 {% endblock titulo %}
 
+{% block breadcrumb %}
+<ol class="breadcrumb my-4 bg-dark">
+		<li class="breadcrumb-item"><a href="{% url 'funciones_list' %}">Funciones</a></li>
+		<li class="breadcrumb-item active">Creacion</li>
+	</ol>
+{% endblock %}
 
 {% block content %}
-	<h1>Crear funcion</h1>
-	
-	<br>
-	<hr>
-	<br>
 	<form method="post" novalidate>
 		{% csrf_token %}
 		{% include 'includes/form.html' %}
 		<button type='submit' class='btn btn-primary btn-large btn-start text-right'>Crear</button>
 	</form>
-	<button type='button' class='btn btn-primary btn-large btn-skip text-right'>Cancelar</button>
+	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>
 	</div>
 {% endblock content %}
