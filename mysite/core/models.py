@@ -76,11 +76,13 @@ class Reporte(models.Model):
 	fk_analisis = models.ForeignKey(Analisis, related_name='fk_analisis', on_delete=models.CASCADE,default=None)
 	canal_1 = models.TextField(max_length=10000, default="")
 	canal_2 = models.TextField(max_length=10000, default="")
-	nombre = models.CharField(max_length=255)
+	nombre_agente = models.CharField(max_length=255)
 	nombre_audio = models.CharField(max_length=255)
+	nombre_campaña = models.CharField(max_length=80,default=None)
+	fecha_audio = models.DateTimeField(default=None)
 	
 	def __str__(self):
-		return self.nombre
+		return self.nombre_audio
 	
 	class Meta:
 		unique_together = (("fk_audio", "fk_analisis","fk_funcion"),)

@@ -1,4 +1,4 @@
-
+from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 from mysite.core import views
@@ -35,6 +35,8 @@ urlpatterns = [
     path('campañas/<int:pk_campaña>/<int:pk_analisis>/', views.analisis, name='analisis'),
     path('campañas/<int:pk_campaña>/<int:pk_analisis>/borrar', views.analisis_borrar, name='analisis_borrar'),
     path('campañas/<int:pk_campaña>/<int:pk_analisis>/<int:pk_reporte>/', views.transcripcion, name='transcripcion'),
+    url(r'^buscar/$', views.buscar, name='buscar'),
+    path('reproducir/<str:audio>', views.reproducir, name='reproducir'),
 ]
 
 

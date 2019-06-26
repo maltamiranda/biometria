@@ -7,6 +7,8 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 
+from .filters import ReporteFilter
+
 from django.template.loader import render_to_string
 
 from .forms import AudioForm, FuncionForm, PalabraForm, AnalisisForm
@@ -130,10 +132,8 @@ def reportes(request):
 def detalleAnalisis(request, audio):
 	data = dict()
 	a = get_object_or_404(Audio, idInteraccion=audio)
-	print (a)
 	reportes = Reporte.objects.filter(fk_audio=a.id)
-	print (reportes)
-	
+
 	data['html_funcion'] = render_to_string('includes/detalleAnalisis_parcial.html',{'reportes':reportes},request)
 	
 	return JsonResponse(data)
@@ -232,8 +232,6 @@ def crear_palabra(request, pk_funcion):
 	
 	return JsonResponse(data)
 	
-	
-	
 @group_required(('Auditor Funciones', '/accounts/login/'))
 def editar_palabra(request, pk_funcion, pk_palabra):
 	data = dict()
@@ -281,9 +279,6 @@ def borrar_palabra(request,pk_funcion,pk_palabra):
 	
 	return JsonResponse(data)
 	
-
-
-
 @login_required
 def cargar_funcion_descripcion(request):
 	id = request.POST['funcion_id']
@@ -328,7 +323,11 @@ def background_analisis_campaña(campaña, analisis_creado):
 									fk_analisis=analisis_creado, 
 									fk_funcion=f,
 									canal_1=canal_1_resaltado,
-									canal_2=a.canal_2)
+									canal_2=a.canal_2,
+									nombre_agente = a.agente.nombre,
+									nombre_audio = a.idInteraccion,
+									nombre_campaña = a.campaña.nombre,
+									fecha_audio = a.inicio)
 	
 @group_required(('Auditor Campañas', '/accounts/login/'))
 def capañas_detalle_crear(request, pk_campaña):
@@ -390,8 +389,9 @@ def transcripcion(request, pk_campaña, pk_analisis, pk_reporte):
 													'palabras':palabras})
 	
 	
-def reproducir(request, pk):
-	return render(request,'reproducir.html')
+def reproducir(request, audio):
+	audio = get_object_or_404(Audio,idInteraccion=audio)
+	return render(request,'reproducir.html',{'audio':audio})
 	
 def cambiarEstado(request, pk_funcion):
 	data = dict()
@@ -416,7 +416,10 @@ def cambiarEstado(request, pk_funcion):
 	
 
 
-
+def buscar(request):
+	reportes = Reporte.objects.all()
+	reporte_filter = ReporteFilter(request.GET, queryset=reportes)
+	return render(request, 'buscar.html',{'filter': reporte_filter})
 
 
 

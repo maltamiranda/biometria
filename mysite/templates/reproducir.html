@@ -5,5 +5,7 @@ Reproductor
 {% endblock titulo %}
 
 {% block content %}
-	
+	<audio controls preload="auto">
+		<source src="{{ audio.file }}" type="audio/mpeg">
+	</audio>
 {% endblock content %}
