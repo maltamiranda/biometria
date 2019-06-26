@@ -21,14 +21,23 @@
 		<thead>
 			<tr>
 				<th>Nombre</th>
+				<th>Funciones</th>
+				<th></th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
-			{% for campaña_f in campaña_funciones %}
+			{% for analisis_item in analisis %}
 			<tr>
-				<td>{{campaña_f.created}}</td>
-				<td>{{campaña_f.getFunciones}}</td>
-				<td><a href="{{campaña_f.id}}" class="btn btn-info btn-sm">Analisis</a></td>
+				<td>{{analisis_item.created}}</td>
+				<td>{{analisis_item.getFunciones}}</td>
+				<td><a href="{{analisis_item.id}}" class="btn btn-info btn-sm">Analisis</a></td>
+				<td>
+					<form method="post" action="{{analisis_item.id}}/borrar">
+						{% csrf_token %}
+						<button type="submit" class="btn btn-danger btn-sm" style='border-radius: 20px;'>Borrar</button>
+					</form>
+				</td>
 			</tr>
 			{% empty %}
 			<tr>

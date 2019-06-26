@@ -17,8 +17,8 @@ class Audio(models.Model):
 	idInteraccion = models.CharField(max_length=60,default=None, unique=True)
 	agente = models.ForeignKey(Agente, related_name='agente', on_delete=models.CASCADE,default=None)
 	campaña = models.ForeignKey(Campaña, related_name='campaña_audio', on_delete=models.CASCADE,default=None)
-	canal_1 = models.TextField(max_length=4000, default="")
-	canal_2 = models.TextField(max_length=4000, default="")
+	canal_1 = models.TextField(max_length=10000, default="")
+	canal_2 = models.TextField(max_length=10000, default="")
 
 	
 	def __str__(self):
@@ -55,24 +55,7 @@ class Palabras(models.Model):
 	def __str__(self):
 		return self.palabra
 		
-class Reporte(models.Model):
-	created = models.DateTimeField(auto_now_add=True)
-	ponderacion = models.IntegerField()
-	fk_funcion = models.ForeignKey(Funcion, related_name='funcion_reporte', on_delete=models.CASCADE)
-	fk_audio = models.ForeignKey(Audio, related_name='audio', on_delete=models.CASCADE)
-	canal_1 = models.TextField()
-	canal_2 = models.TextField()
-	nombre = models.CharField(max_length=255)
-	nombre_audio = models.CharField(max_length=255)
-	
-	def __str__(self):
-		return self.nombre
-		
-#class Lote(models.Model):
-
-
-	
-class Campaña_funciones(models.Model):
+class Analisis(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 	funciones = models.ManyToManyField('Funcion',limit_choices_to = {'estado': 1})
 	fk_campaña = models.ForeignKey(Campaña, related_name='fk_campaña', on_delete=models.CASCADE, default=None)
@@ -83,14 +66,37 @@ class Campaña_funciones(models.Model):
 			temp = temp+f.nombre+','
 			
 		return temp[:-1]
-
-class Campaña_Audio_Analisis(models.Model):
-	analisis = models.IntegerField()
-	fk_audio = models.ForeignKey(Audio, related_name='fk_audio_campaña', on_delete=models.CASCADE)
-	fk_campaña_funcion = models.ForeignKey(Campaña_funciones, related_name='fk_campaña_funcion', on_delete=models.CASCADE,default=None)
-	fk_funcion = models.ForeignKey(Funcion, related_name='fk_funcion', on_delete=models.CASCADE,default=None)
-	fk_campaña = models.ForeignKey(Campaña, related_name='campaña', on_delete=models.CASCADE)
+		
+		
+class Reporte(models.Model):
+	created = models.DateTimeField(auto_now_add=True)
+	ponderacion = models.IntegerField()
+	fk_funcion = models.ForeignKey(Funcion, related_name='funcion_reporte', on_delete=models.CASCADE)
+	fk_audio = models.ForeignKey(Audio, related_name='audio', on_delete=models.CASCADE)
+	fk_analisis = models.ForeignKey(Analisis, related_name='fk_analisis', on_delete=models.CASCADE,default=None)
+	canal_1 = models.TextField(max_length=10000, default="")
+	canal_2 = models.TextField(max_length=10000, default="")
+	nombre = models.CharField(max_length=255)
+	nombre_audio = models.CharField(max_length=255)
+	
+	def __str__(self):
+		return self.nombre
 	
 	class Meta:
-		unique_together = (("fk_audio", "fk_campaña_funcion","fk_campaña","fk_funcion"),)
-		
+		unique_together = (("fk_audio", "fk_analisis","fk_funcion"),)
+#class Lote(models.Model):
+
+
+	
+
+
+#class Campaña_Audio_Analisis(models.Model):
+#	analisis = models.IntegerField()
+#	fk_audio = models.ForeignKey(Audio, related_name='fk_audio_campaña', on_delete=models.CASCADE)
+#	fk_campaña_funcion = models.ForeignKey(Campaña_funciones, related_name='fk_campaña_funcion', on_delete=models.CASCADE,default=None)
+#	fk_funcion = models.ForeignKey(Funcion, related_name='fk_funcion', on_delete=models.CASCADE,default=None)
+#	fk_campaña = models.ForeignKey(Campaña, related_name='campaña', on_delete=models.CASCADE)
+#	
+#	class Meta:
+#		unique_together = (("fk_audio", "fk_campaña_funcion","fk_campaña","fk_funcion"),)
+#		

@@ -46,7 +46,6 @@ Reportes
 				<th>Fecha</th>
 				<th>Agente</th>
 				<th>Ponderacion</th>
-				<th>Transcripción</th>
 				<th>Reproducir</th>
 			</tr>
 		</thead>
@@ -56,8 +55,7 @@ Reportes
 				<td class="expandir" id='id_audio'>{{campaña_fa.audio}}</td>
 				<td>{{campaña_fa.fecha}}</td>
 				<td>{{campaña_fa.nombreAgente}}</td>
-				<td style="text-align:center">{{campaña_fa.analisis}} %</td>
-				<td><a href="{{campaña_fa.fk_audio.id}}" class="btn btn-info btn-sm">Transcripción a Texto</a></td>
+				<td style="text-align:center">{{campaña_fa.ponderacion}} %</td>
 				<td><a href="play/{{campaña_fa.fk_audio.id}}" class="btn btn-success btn-sm" target="_blank">Abrir Archivo</a></td>
 			</tr>
 			{% empty %}
@@ -72,7 +70,6 @@ Reportes
 				<th>Fecha</th>
 				<th>Agente</th>
 				<th>Ponderacion</th>
-				<th>Transcripción</th>
 				<th>Reproducir</th>
 			</tr>
 		</tfoot>

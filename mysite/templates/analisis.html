@@ -9,7 +9,7 @@ Analisis
 		
 			<li class="breadcrumb-item"><a href="{% url 'campañas' %}">Campañas</a></li>
 			<li class="breadcrumb-item"><a href="/campañas/{{campaña.pk}}">{{campaña.nombre}}</a></li>
-			<li class="breadcrumb-item active">{{campaña_funcion.created}}</li>
+			<li class="breadcrumb-item active">{{analisis.created}}</li>
 		
 	</ol>
 {% endblock %}
@@ -38,13 +38,13 @@ Analisis
 			</tr>
 		</thead>
 		<tbody>
-			{% for campaña_fa in campaña_funcion_analisis %}
+			{% for reporte in reportes %}
 			<tr>
-				<td>{{campaña_fa.fk_audio}}</td>
-				<td>{{campaña_fa.fk_audio.agente.nombre}}</td>
-				<td>{{campaña_fa.fk_funcion}}</td>
-				<td>{{campaña_fa.analisis}}</td>
-				<td><a href="{{campaña_fa.fk_audio.id}}" class="btn btn-info btn-sm">Transcripción a Texto</a></td>
+				<td>{{reporte.fk_audio}}</td>
+				<td>{{reporte.fk_audio.agente.nombre}}</td>
+				<td>{{reporte.fk_funcion}}</td>
+				<td>{{reporte.ponderacion}} %</td>
+				<td><a href="{{reporte.id}}" class="btn btn-info btn-sm">Transcripción a Texto</a></td>
 			</tr>
 			{% empty %}
 			<tr>
@@ -58,6 +58,7 @@ Analisis
 				<th>Agente</th>
 				<th>Funcion</th>
 				<th>Ponderacion</th>
+				<th>Transcripción</th>
 			</tr>
 		</tfoot>
 	</table>

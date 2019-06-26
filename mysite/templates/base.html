@@ -71,8 +71,17 @@
 	  	      <li class="nav-item">
 	  	        <a class="nav-link" href="{% url 'home' %}"><strong>Inicio</strong></a>
 	  	      </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'funciones' %}">Funciones</a>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Funcionalidades</a>
+	  	    	    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+	  	    	      <a class="dropdown-item" href="{% url 'funciones' %}">Funcion</a>
+	  	    	      <div class="dropdown-divider"></div>
+	  	    	      <a class="dropdown-item" href="{% url 'campañas' %}">Campañas</a>
+	  	    	      <div class="dropdown-divider"></div>
+					  <a class="dropdown-item" href="{% url 'reportes' %}">Reportes</a>
+	  	    	      <div class="dropdown-divider"></div>
+					  <a class="dropdown-item" href="#">Graficos</a>
+	  	    	    </div>
               </li>
 	  	    </ul>
 

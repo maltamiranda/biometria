@@ -4,15 +4,31 @@
 Crear detalle campaña
 {% endblock titulo %}
 
+{% block breadcrumb %}
+<ol class="breadcrumb my-4 bg-dark">
+		<li class="breadcrumb-item"><a href="{% url 'campañas' %}">Campañas</a></li>
+		<li class="breadcrumb-item"><a href="/campañas/{{campaña.pk}}">{{campaña.nombre}}</a></li>
+		<li class="breadcrumb-item active">Analizar</li>
+	</ol>
+{% endblock %}
+
 {% block content %}
-	<h1>Crear detalle campaña</h1>
-	
-	<br>
-	<hr>
-	<br>
 	<form method="post" novalidate>
 		{% csrf_token %}
-		{% include 'includes/form.html' %}
+		{% load widget_tweaks %}
+
+		{% for field in form.visible_fields  %}
+		<div class="form-group{% if field.errors %} has-error{% endif %}">
+			<label for="{{ field.id_for_label }}">{{ field.label }}</label>
+			{% render_field field class="form-control" %}
+			{% for error in field.errors %}
+			<p class="help-block">{{ error }}</p>
+			{% endfor %}
+		</div>
+		{% endfor %}
+		{% for hidden in form.hidden_fields %}
+			{{ hidden }}
+		{% endfor %}
 		<button type='submit' class='btn btn-primary btn-large btn-start text-right'>Crear</button>
 	</form>
 	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>

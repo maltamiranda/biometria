@@ -1,10 +1,12 @@
 <div id="id_funcionDetalle">
-	<h4>Nombre de la funcion</h4>
-	<p>{{funcion.nombre}}</p>
-	<h4>Descripcion de la funcion</h4>
-	<p>{{funcion.descripcion}}</p>
-	<h4>Ponderacion</h4>
-	<p id="id_ponderacion">{{funcion.ponderacion}}</p>
-	<h4>Estado</h4>
-	<p id="id_estado">{{funcion.get_estado_display}}</p>
+	<dl class="row">
+	<dt class="col-sm-3">Nombre de la funcion</dt>
+	<dd class="col-sm-9">{{funcion.nombre}}</dd>
+	<dt class="col-sm-3">Descripcion de la funcion</dt>
+	<dd class="col-sm-9">{{funcion.descripcion}}</dd>
+	<dt class="col-sm-3">Ponderacion</dt>
+	<dd class="col-sm-9" id="id_ponderacion">{{funcion.ponderacion}}</dd>
+	<dt class="col-sm-3">Estado</dt>
+	<dd class="col-sm-9" id="id_estado">{{funcion.get_estado_display}}</dd>
+	</dl>
 </div>

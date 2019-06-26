@@ -8,27 +8,76 @@ Inicio
 	<div class="jumbotron mt-0">
 	  <h1 class="display-4">Biometría ProvinciaNet</h1>
 	  <p class="lead"></p>
-	  <hr class="my-4">
 	  <p>Herramienta para control y auditoria interna.</p>
-	  <a class="btn btn-primary btn-lg" href='{% url 'funciones' %}' role="button">Funciones</a>
-	</div>
+	  <hr class="my-4">
+	<div class="row mt-5">
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-aqua" style='border-radius: 15px;'>
+                <div class="inner">
+                  <h3>Funciones</h3>
 
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-4">
-				<h2>Como usarlo?</h2>
-				<p><a href="#" class="btn btn-outline-primary" role="button">Ver más</a></p>
-			</div>
-			<div class="col-sm-4">
-				<h2>Por qué usarlo?</h2>
-				<p><a href="#" class="btn btn-outline-primary" role="button">Ver más</a></p>
-			</div>
-			<div class="col-sm-4">
-				<h2>Soporte Técnico</h2>
-				<p><a href="#" class="btn btn-outline-primary" role="button">Ver más</a></p>
-			</div>
-		</div>
-	</div>
+                  <p>Gestionar Funciones</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-ios-mic"></i>
+                </div>
+                <center>
+                  <a href='{% url 'funciones_list' %}' style="color: white;">Click aquí <i class="fa fa-arrow-circle-right"></i></a>
+                </center>
+              </div>
+            </div>
+            <!-- ./col -->
+			<div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-green" style='border-radius: 15px;'>
+                <div class="inner">
+                  <h3>Campañas</h3>
 
-	
+                  <p>Lista campañas</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-ios-cloud-upload"></i>
+                </div>
+                <center>
+                  <a href='{% url 'campañas' %}' style="color: white;">Click aquí <i class="fa fa-arrow-circle-right"></i></a>
+                </center>
+              </div>
+            </div>
+			<!-- ./col -->
+            <!-- ./col -->
+			<div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-yellow" style='border-radius: 15px;'>
+                <div class="inner">
+                  <h3>Reportes</h3>
+
+                  <p>Lista de los reportes</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-ios-list"></i>
+                </div>
+                <center>
+                  <a href="{% url 'reportes' %}" style="color: white;">Click aquí <i class="fa fa-arrow-circle-right"></i></a>
+                </center>
+              </div>
+            </div>
+            <!-- ./col -->
+			<div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-red" style='border-radius: 15px;'>
+                <div class="inner">
+                  <h3>Graficos</h3>
+
+                  <p>Analisis graficos</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-pie-graph"></i>
+                </div>
+                <center>
+                  <a href='{% url 'reportes' %}' style="color: white;">Click aquí <i class="fa fa-arrow-circle-right"></i></a>
+                </center>
+              </div>
+            </div>
+          </div></div
 {% endblock content %}

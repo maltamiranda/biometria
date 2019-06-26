@@ -8,12 +8,15 @@ Transcripcion
 	<ol class="breadcrumb my-4 bg-dark">
 		<li class="breadcrumb-item"><a href="{% url 'campañas' %}">Campañas</a></li>
 		<li class="breadcrumb-item"><a href="/campañas/{{campaña.pk}}">{{campaña.nombre}}</a></li>
-		<li class="breadcrumb-item"><a href="/campañas/{{campaña.pk}}/{{campaña_funcion.id}}">{{campaña_funcion.created}}</a></li>
-		<li class="breadcrumb-item active">{{audio.idInteraccion}} - Transcripcion</li>
+		<li class="breadcrumb-item"><a href="/campañas/{{campaña.pk}}/{{analisis.id}}">{{analisis.created}}</a></li>
+		<li class="breadcrumb-item active">{{reporte.fk_audio.idInteraccion}} - Reporte</li>
 	</ol>
 {% endblock %}
 
 {% block content %}
+	<div>
+		{% include 'includes/reporte_parcial_detalle.html' %}
+	</div>
 	<table class="table mb-0">
 		<thead>
 			<tr>
@@ -23,8 +26,8 @@ Transcripcion
 		</thead>
 		<tbody>
 			<tr>
-				<td>{{audio.canal_1}}</td>
-				<td>{{audio.canal_2}}</td>
+				<td>{{reporte.canal_1|safe}}</td>
+				<td>{{reporte.canal_2}}</td>
 			</tr>
 		</tbody>
 	</table>

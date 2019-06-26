@@ -9,10 +9,10 @@ from django.http import JsonResponse
 
 from django.template.loader import render_to_string
 
-from .forms import AudioForm, FuncionForm, PalabraForm, Campaña_funcionesForm
+from .forms import AudioForm, FuncionForm, PalabraForm, AnalisisForm
 from .models import Audio
 from .models import Funcion
-from .models import Reporte, Palabras, Campaña, Campaña_funciones, Campaña_Audio_Analisis
+from .models import Reporte, Palabras, Campaña, Analisis
 from .transcriptor import Transcriptor
 from .ponderacion import Evaluador
 
@@ -110,37 +110,44 @@ def analizar(request, pk):
 	
 @group_required(('Auditor Reportes', '/accounts/login/'))
 def reportes(request):
-	campaña_funcion_analisis = Campaña_Audio_Analisis.objects.all()
+	reportes = Reporte.objects.all()
 	
 	campañas = {}
 	campañasList = []
-	for camp in campaña_funcion_analisis:
+	for camp in reportes:
 		campTemp = campañas.get(camp.fk_audio.idInteraccion, None)
 		if campTemp == None:
-			campañas[camp.fk_audio.idInteraccion] = [camp.analisis,camp.fk_audio.agente.nombre,1, camp.fk_audio.inicio]
+			campañas[camp.fk_audio.idInteraccion] = [camp.ponderacion,camp.fk_audio.agente.nombre,1, camp.fk_audio.inicio]
 		else:
-			analisis = campTemp[0] +  camp.analisis
+			ponderacion = campTemp[0] +  camp.ponderacion
 			cont = campTemp[2] + 1
-			campañas[camp.fk_audio.idInteraccion] = [analisis,camp.fk_audio.agente.nombre, cont, camp.fk_audio.inicio]
+			campañas[camp.fk_audio.idInteraccion] = [ponderacion,camp.fk_audio.agente.nombre, cont, camp.fk_audio.inicio]
 	for key in campañas:
 		temp = campañas[key]
-		campañasList.append({'analisis':round(temp[0]/temp[2],1),'nombreAgente':temp[1], 'audio':key, 'fecha':temp[3]})
+		campañasList.append({'ponderacion':round(temp[0]/temp[2],1),'nombreAgente':temp[1], 'audio':key, 'fecha':temp[3]})
 	return render(request, 'reportes.html', {'campañas':campañasList})
 	
 def detalleAnalisis(request, audio):
 	data = dict()
 	a = get_object_or_404(Audio, idInteraccion=audio)
 	print (a)
-	audios = Campaña_Audio_Analisis.objects.filter(fk_audio_id=a.id)
+	reportes = Reporte.objects.filter(fk_audio=a.id)
+	print (reportes)
 	
-	data['html_funcion'] = render_to_string('includes/detalleAnalisis_parcial.html',{'audios':audios},request)
+	data['html_funcion'] = render_to_string('includes/detalleAnalisis_parcial.html',{'reportes':reportes},request)
 	
 	return JsonResponse(data)
 	
 @login_required
-def reporte_generado(request, pk):
-	reporte = Reporte.objects.get(pk=pk)
-	return render(request, 'reporte_generado.html', {'reporte':reporte})
+def reporte_generado(request, pk_reporte):
+	reporte = Reporte.objects.get(pk=pk_reporte)
+	analisis = get_object_or_404(Analisis, pk=reporte.fk_analisis.pk)
+	campaña =get_object_or_404(Campaña, pk=analisis.fk_campaña.pk)
+	palabras = Palabras.objects.filter(fk_funcion=reporte.fk_funcion)
+	return render(request, 'reporte_generado.html', {'reporte':reporte,
+													'analisis':analisis,
+													'campaña':campaña,
+													'palabras':palabras})
 
 @group_required(('Auditor Funciones', '/accounts/login/'))
 #@login_required
@@ -294,52 +301,65 @@ def campañas(request):
 @group_required(('Auditor Campañas', '/accounts/login/'))
 def campañas_detalle(request, pk_campaña):
 	campaña = get_object_or_404(Campaña, pk=pk_campaña)
-	campaña_funciones = Campaña_funciones.objects.filter(fk_campaña=campaña)
-	return render(request, 'campaña_detalle.html', {'campaña_funciones':campaña_funciones,'campaña_nombre':campaña.nombre, 'campaña_id':campaña.id})
+	analisis = Analisis.objects.filter(fk_campaña=campaña)
+	return render(request, 'campaña_detalle.html', {'analisis':analisis,'campaña_nombre':campaña.nombre, 'campaña_id':campaña.id})
 	
 
-def background_analisis_campaña(campaña, campaña_funcion_creada):
+def background_analisis_campaña(campaña, analisis_creado):
 	audios = Audio.objects.filter(campaña=campaña)
-	funciones = campaña_funcion_creada.funciones.all()
+	funciones = analisis_creado.funciones.all()
 	
 	for a in audios:
 		for f in funciones:
 			e = Evaluador()
 			#ch1 = e.normalizar(a.canal_1) 
 			suma = e.ponderizar(a.canal_1.lower(), Palabras.objects.filter(fk_funcion=f))
-			
+			canal_1_resaltado= a.canal_1
+			canal_1_resaltado = canal_1_resaltado.split(" ")
+			for palabra in Palabras.objects.filter(fk_funcion=f):
+				if palabra.palabra.lower() in canal_1_resaltado:
+					for indice,palabra_Canal_1 in enumerate(canal_1_resaltado):
+						if palabra.palabra.lower() == palabra_Canal_1:
+							canal_1_resaltado[indice] = palabra_Canal_1.replace(palabra.palabra.lower(),'<b>'+palabra.palabra.lower()+'</b>')
+			canal_1_resaltado = " ".join(canal_1_resaltado)
 			#analisis = random.randint(0, 100)
-			Campaña_Audio_Analisis.objects.create(analisis=suma, fk_audio=a, fk_campaña_funcion=campaña_funcion_creada, fk_campaña=campaña, fk_funcion=f)
+			Reporte.objects.create(ponderacion=suma, 
+									fk_audio=a, 
+									fk_analisis=analisis_creado, 
+									fk_funcion=f,
+									canal_1=canal_1_resaltado,
+									canal_2=a.canal_2)
 	
 @group_required(('Auditor Campañas', '/accounts/login/'))
 def capañas_detalle_crear(request, pk_campaña):
 	if request.method == 'POST':
-		form = Campaña_funcionesForm(request.POST,fk_campaña=pk_campaña)
+		form = AnalisisForm(request.POST,initial={'fk_campaña':pk_campaña})
 		if form.is_valid():
-			campaña_funcion_creada = form.save()
+			analisis_creado = form.save()
 			campaña = get_object_or_404(Campaña, pk=pk_campaña)
-			campaña_funciones = Campaña_funciones.objects.filter(fk_campaña=campaña)
+			analisis = Analisis.objects.filter(fk_campaña=campaña)
 			
 			
 			#background_analisis_campaña(campaña,campaña_funcion_creada)
-			t = threading.Thread(target=background_analisis_campaña, args=(), kwargs={"campaña":campaña, "campaña_funcion_creada":campaña_funcion_creada})
+			t = threading.Thread(target=background_analisis_campaña, args=(), kwargs={"campaña":campaña, "analisis_creado":analisis_creado})
 			t.setDaemon(True)
 			t.start()
 			
-			campaña_funciones = Campaña_funciones.objects.filter(fk_campaña=campaña)
-			return render(request, 'campaña_detalle.html', {'campaña_funciones':campaña_funciones,'campaña_nombre':campaña.nombre, 'campaña_id':campaña.id})
+			analisis = Analisis.objects.filter(fk_campaña=campaña)
+			return render(request, 'campaña_detalle.html', {'analisis':analisis,'campaña_nombre':campaña.nombre, 'campaña_id':campaña.id})
 	else:
-		form = Campaña_funcionesForm(fk_campaña=pk_campaña)
-		return render(request, 'campaña_detalle_crear.html', {'form':form})
+		campaña = get_object_or_404(Campaña, pk=pk_campaña)
+		form = AnalisisForm(initial={'fk_campaña':pk_campaña})
+		return render(request, 'campaña_detalle_crear.html', {'form':form,'campaña':campaña})
 		
 @group_required(('Auditor Campañas', '/accounts/login/'))
-def campaña_funcion_analisis(request, pk_campaña, pk_campaña_funcion):
+def analisis(request, pk_campaña, pk_analisis):
 	campaña =get_object_or_404(Campaña, pk=pk_campaña)
-	campaña_funcion = get_object_or_404(Campaña_funciones, pk=pk_campaña_funcion)
-	campaña_funcion_analisis = Campaña_Audio_Analisis.objects.filter(fk_campaña=campaña,fk_campaña_funcion=campaña_funcion)
-	return render(request, 'campaña_audio_analisis.html',{'campaña_funcion_analisis':campaña_funcion_analisis,
-		'campaña_funcion':campaña_funcion,
-		'campaña':campaña})
+	analisis = get_object_or_404(Analisis, pk=pk_analisis)
+	reportes = Reporte.objects.filter(fk_analisis=analisis)
+	return render(request, 'analisis.html',{'reportes':reportes,
+															'analisis':analisis,
+															'campaña':campaña})
 
 @group_required(('Auditor Funciones', '/accounts/login/'))
 def funciones_borrar(request, pk):
@@ -348,16 +368,26 @@ def funciones_borrar(request, pk):
 		funcion.delete()
 	return redirect('funciones_list')
 	
+def analisis_borrar(request, pk_campaña, pk_analisis):
+	if request.method == 'POST':
+		analisis = get_object_or_404(Analisis, pk=pk_analisis)
+		analisis.delete()
+	return redirect('campañas_detalle', pk_campaña)
+	
+
 @group_required(('Auditor Campañas', '/accounts/login/'))
-def transcripcion(request, pk_campaña, pk_campaña_funcion, pk_audio):
-	audio = Audio.objects.get(pk=pk_audio)
+def transcripcion(request, pk_campaña, pk_analisis, pk_reporte):
+	reporte = Reporte.objects.get(pk=pk_reporte)
 	campaña =get_object_or_404(Campaña, pk=pk_campaña)
-	campaña_funcion = get_object_or_404(Campaña_funciones, pk=pk_campaña_funcion)
-	c1 = audio.canal_1
+	analisis = get_object_or_404(Analisis, pk=pk_analisis)
+	palabras = Palabras.objects.filter(fk_funcion=reporte.fk_funcion)
+	#funcion = get_object_or_404(Funcion, pk=reporte.fk_funcion.pk)
+	#c1 = audio.canal_1
 	#for palabra in Palabras.objects.filter(fk_funcion=)
-	return render(request, 'transcripcion.html', {'audio':audio,
-			'campaña_funcion':campaña_funcion,
-			'campaña':campaña})
+	return render(request, 'transcripcion.html', {'reporte':reporte,
+													'analisis':analisis,
+													'campaña':campaña,
+													'palabras':palabras})
 	
 	
 def reproducir(request, pk):

@@ -49,10 +49,10 @@ class Evaluador(object):
 	def ponderizar(self, canal1, palabras):
 	
 		suma = 0
-		
+		canal1_temp = set(canal1.split(" "))
 		for p in palabras:
-			print (p.palabra.lower())
-			if p.palabra.lower() in canal1:
-				suma = suma + p.porcentaje
+			for pCanal in canal1_temp:
+				if p.palabra.lower() == pCanal:
+					suma = suma + p.porcentaje
 		
 		return suma

@@ -1,0 +1,35 @@
+<div id="id_funcionDetalle">
+	<h3>Funcion</h3>
+	<dl class="row">
+	<dt class="col-sm-3">Nombre de la funcion</dt>
+	<dd class="col-sm-9">{{reporte.fk_funcion.nombre}}</dd>
+	<dt class="col-sm-3">Descripcion de la funcion</dt>
+	<dd class="col-sm-9">{{reporte.fk_funcion.descripcion}}</dd>
+	<dt class="col-sm-3">Ponderacion</dt>
+	<dd class="col-sm-9">{{reporte.ponderacion}} %</dd>
+	</dl>
+</div>
+<div>
+	<h3>Palabras</h3>
+</div>
+<div>
+<table class="table">
+	<thead>
+		<tr>
+			<th>Palabra</th>
+			<th>Valor</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for palabra in palabras %}
+		<tr>
+			<td>{{palabra.palabra}}</td>
+			<td>{{palabra.porcentaje}} %</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+</div>
+<div>
+	<h3>Transcripcion</h3>
+</div>

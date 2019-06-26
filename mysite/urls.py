@@ -23,7 +23,7 @@ urlpatterns = [
     #path('audios/', views.audio_list, name='audio_list'),
     #path('audios/upload/', views.upload_audio, name='upload_audio'),
     #path('audios/<int:pk>/', views.delete_audio, name='delete_audio'),
-    path('reportes/<int:pk>/', views.reporte_generado, name='reporte_generado'),
+    path('reportes/<int:pk_reporte>/', views.reporte_generado, name='reporte_generado'),
     path('reportes/', views.reportes, name='reportes'),
 	path('reportes/play/<int:pk>/', views.reproducir, name='reproducir'),
     #path('singup/', views.singup, name='singup'),
@@ -32,8 +32,9 @@ urlpatterns = [
     path('campañas/', views.campañas, name='campañas'),
     path('campañas/<int:pk_campaña>/', views.campañas_detalle, name='campañas_detalle'),
     path('campañas/<int:pk_campaña>/crear', views.capañas_detalle_crear, name='capañas_detalle_crear'),
-    path('campañas/<int:pk_campaña>/<int:pk_campaña_funcion>/', views.campaña_funcion_analisis, name='campaña_funcion_analisis'),
-    path('campañas/<int:pk_campaña>/<int:pk_campaña_funcion>/<int:pk_audio>/', views.transcripcion, name='transcripcion'),
+    path('campañas/<int:pk_campaña>/<int:pk_analisis>/', views.analisis, name='analisis'),
+    path('campañas/<int:pk_campaña>/<int:pk_analisis>/borrar', views.analisis_borrar, name='analisis_borrar'),
+    path('campañas/<int:pk_campaña>/<int:pk_analisis>/<int:pk_reporte>/', views.transcripcion, name='transcripcion'),
 ]
 
 

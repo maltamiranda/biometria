@@ -4,6 +4,16 @@
 Campañas
 {% endblock titulo %}
 
+{% block javascript %}
+<script>
+	$(function () {
+		$(document).ready(function() {
+			$('#id_tabla').DataTable();
+		});
+	});
+</script>
+{% endblock javascript %}
+
 {% block breadcrumb %}
 	<ol class="breadcrumb my-4 bg-dark">
 		<li class="breadcrumb-item active">Campañas</li>
@@ -11,12 +21,14 @@ Campañas
 {% endblock %}
 
 {% block content %}
-
-
-	<table class="table mb-0">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" />
+	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+	<table id="id_tabla" class="table table-striped table-bordered" style="width:100%">
 		<thead>
 			<tr>
 				<th>Nombre</th>
+				<th></ht>
 			</tr>
 		</thead>
 		<tbody>
@@ -27,5 +39,12 @@ Campañas
 			</tr>
 			{% endfor %}
 		</tbody>
+		<tfoot>
+			<tr>
+				<th>Nombre</th>
+				<th></ht>
+			</tr>
+		</tfoot>
 	</table>
+	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>
 {% endblock content %}

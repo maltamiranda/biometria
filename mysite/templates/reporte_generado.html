@@ -1,26 +1,33 @@
 {% extends "base.html" %}
 
 {% block titulo %}
-Reporte Generado
+Transcripcion
 {% endblock titulo %}
 
+{% block breadcrumb %}
+	<ol class="breadcrumb my-4 bg-dark">
+		<li class="breadcrumb-item"><a href="{% url 'reportes' %}">Reportes</a></li>
+		<li class="breadcrumb-item active">{{reporte.fk_audio.idInteraccion}}</li>
+	</ol>
+{% endblock %}
+
 {% block content %}
-	<h1>Reporte Generado</h1>
-	
-	
+	<div>
+		{% include 'includes/reporte_parcial_detalle.html' %}
+	</div>
 	<table class="table mb-0">
 		<thead>
 			<tr>
-				<th>Canal 1 / Operador</th>
-				<th>Canal 2 / Cliente</th>
+				<th style="width: 50%">Canal 1 / Operador</th>
+				<th style="width: 50%">Canal 2 / Cliente</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
-				<td>{{reporte.canal_1}}</td>
+				<td>{{reporte.canal_1|safe}}</td>
 				<td>{{reporte.canal_2}}</td>
 			</tr>
 		</tbody>
 	</table>
-	
+	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>
 {% endblock content %}
