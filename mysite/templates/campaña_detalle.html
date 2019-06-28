@@ -6,9 +6,8 @@
 
 {% block breadcrumb %}
 	<ol class="breadcrumb my-4 bg-dark">
-		
-			<li class="breadcrumb-item"><a href="{% url 'campañas' %}">Campañas</a></li>
-			<li class="breadcrumb-item active">{{campaña_nombre}}</li>
+			<li class="breadcrumb-item"><a href="{% url 'campañas' %}"><u>Campañas</u></a></li>
+			<li class="breadcrumb-item text-white">{{campaña_nombre}}</li>
 		
 	</ol>
 {% endblock %}

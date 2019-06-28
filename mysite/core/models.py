@@ -19,6 +19,8 @@ class Audio(models.Model):
 	campaña = models.ForeignKey(Campaña, related_name='campaña_audio', on_delete=models.CASCADE,default=None)
 	canal_1 = models.TextField(max_length=10000, default="")
 	canal_2 = models.TextField(max_length=10000, default="")
+	comentario = models.TextField(max_length=10000, default="")
+	ponderacion = models.IntegerField(default=0)
 
 	
 	def __str__(self):
@@ -80,6 +82,7 @@ class Reporte(models.Model):
 	nombre_audio = models.CharField(max_length=255)
 	nombre_campaña = models.CharField(max_length=80,default=None)
 	fecha_audio = models.DateTimeField(default=None)
+	comentario = models.TextField(max_length=10000, default="")
 	
 	def __str__(self):
 		return self.nombre_audio

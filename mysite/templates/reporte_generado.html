@@ -6,8 +6,8 @@ Transcripcion
 
 {% block breadcrumb %}
 	<ol class="breadcrumb my-4 bg-dark">
-		<li class="breadcrumb-item"><a href="{% url 'reportes' %}">Reportes</a></li>
-		<li class="breadcrumb-item active">{{reporte.fk_audio.idInteraccion}}</li>
+		<li class="breadcrumb-item"><a href="{% url 'reportes' %}"><u>Reportes</u></a></li>
+		<li class="breadcrumb-item text-white">{{reporte.fk_audio.idInteraccion}}</li>
 	</ol>
 {% endblock %}
 

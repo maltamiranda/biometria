@@ -8,8 +8,8 @@ Detalle funcion
 
 {% block breadcrumb %}
 	<ol class="breadcrumb my-4 bg-dark">
-		<li class="breadcrumb-item"><a href="{% url 'funciones_list' %}">Funciones</a></li>
-		<li class="breadcrumb-item active">{{funcion.nombre}}</li>
+		<li class="breadcrumb-item"><a href="{% url 'funciones_list' %}"><u>Funciones</u></a></li>
+		<li class="breadcrumb-item text-white">{{funcion.nombre}}</li>
 	</ol>
 {% endblock %}
 
@@ -25,7 +25,9 @@ Detalle funcion
 	});
 	
 	var checkBarraEstado = function() {
-		if ($('#id_ponderacion').text() == '100'){
+		if ($('#id_ponderacion').text() == '100%'){
+			$("#id_alertaPonderacion").removeClass("alert alert-primary");
+			$("#id_alertaPonderacion").html("");
 			$('#id_barraEstado').bootstrapToggle('enable');
 			if ($('#id_estado').text() == 'Habilitado') {
 				$('#id_barraEstado').bootstrapToggle('on');
@@ -33,7 +35,10 @@ Detalle funcion
 				$('#id_barraEstado').bootstrapToggle('off');
 			};
 		} else {
+			$('#id_barraEstado').bootstrapToggle('off');
 			$('#id_barraEstado').bootstrapToggle('disable');
+			$("#id_alertaPonderacion").addClass("alert alert-primary");
+			$("#id_alertaPonderacion").html("Se necesita la ponderacion en 100% para activar la funcion");
 		}
 	};
 	
@@ -47,7 +52,6 @@ Detalle funcion
 				success: function (data) {
 					if (data.is_valid) {
 						$("#id_funcionDetalle").html(data.html_funcion);
-						console.log("OK")
 					} else {
 						console.log("Fallo")
 					}
@@ -123,6 +127,7 @@ Detalle funcion
 	<div>
 		{% include 'includes/funcion_parcial_detalle.html' %}
 		<div id='id_DIV-barraEstado'>
+			<div id="id_alertaPonderacion"></div>
 			<input type="checkbox" data-toggle="toggle" data-on="Habilitado" data-off="Deshabilitado" id="id_barraEstado">
 		</div>
 	</div>

@@ -11,7 +11,7 @@ from .filters import ReporteFilter
 
 from django.template.loader import render_to_string
 
-from .forms import AudioForm, FuncionForm, PalabraForm, AnalisisForm
+from .forms import AudioForm, FuncionForm, PalabraForm, AnalisisForm, ComentarioReporteForm, ComentarioAudioForm
 from .models import Audio
 from .models import Funcion
 from .models import Reporte, Palabras, Campaña, Analisis
@@ -112,22 +112,8 @@ def analizar(request, pk):
 	
 @group_required(('Auditor Reportes', '/accounts/login/'))
 def reportes(request):
-	reportes = Reporte.objects.all()
-	
-	campañas = {}
-	campañasList = []
-	for camp in reportes:
-		campTemp = campañas.get(camp.fk_audio.idInteraccion, None)
-		if campTemp == None:
-			campañas[camp.fk_audio.idInteraccion] = [camp.ponderacion,camp.fk_audio.agente.nombre,1, camp.fk_audio.inicio]
-		else:
-			ponderacion = campTemp[0] +  camp.ponderacion
-			cont = campTemp[2] + 1
-			campañas[camp.fk_audio.idInteraccion] = [ponderacion,camp.fk_audio.agente.nombre, cont, camp.fk_audio.inicio]
-	for key in campañas:
-		temp = campañas[key]
-		campañasList.append({'ponderacion':round(temp[0]/temp[2],1),'nombreAgente':temp[1], 'audio':key, 'fecha':temp[3]})
-	return render(request, 'reportes.html', {'campañas':campañasList})
+	audios = Audio.objects.all()
+	return render(request, 'reportes.html', {'audios':audios})
 	
 def detalleAnalisis(request, audio):
 	data = dict()
@@ -423,14 +409,42 @@ def buscar(request):
 
 
 
+@group_required(('Auditor Reportes', '/accounts/login/'))
+def comentario_audio(request, pk_audio):
+	data = dict()
+	audio = get_object_or_404(Audio, pk=pk_audio)
+	if request.method == 'POST':
+		form = ComentarioAudioForm(request.POST, instance=audio)
+		if form.is_valid():
+			form.save()
+			data['form_is_valid'] = True
+	else:
+		form = ComentarioAudioForm(instance=audio)
+		print ("Cargo el form")
+	
+	context = {'form':form,'audio':audio}
+	data['html_form'] = render_to_string('includes/comentario_parcial.html',context,request)
 
+	
+	return JsonResponse(data)
 
+@group_required(('Auditor Reportes', '/accounts/login/'))
+def comentario_reporte(request, pk_reporte):
+	data = dict()
+	audio = get_object_or_404(Reporte, pk=pk_reporte)
+	if request.method == 'POST':
+		form = ComentarioReporteForm(request.POST, instance=audio)
+		if form.is_valid():
+			form.save()
+			data['form_is_valid'] = True
+	else:
+		form = ComentarioReporteForm(instance=audio)
+		print ("Cargo el form")
+	
+	context = {'form':form,'audio':audio}
+	data['html_form'] = render_to_string('includes/comentario_parcial.html',context,request)
 
-
-
-
-
-
-
+	
+	return JsonResponse(data)
 
 

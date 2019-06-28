@@ -3,6 +3,13 @@
 {% block titulo %}
 Reportes
 {% endblock titulo %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb my-4 bg-dark">
+			<li class="breadcrumb-item text-white">Reportes</li>
+	</ol>
+{% endblock %}
+
 {% block javascript %}
 <script>
 	$(function () {
@@ -10,6 +17,41 @@ Reportes
 			$('#id_tabla').DataTable();
 		});
 		
+
+		var loadForm = function () {
+			var btn = $(this);
+			console.log("cargo el loadForm")
+			$.ajax({
+				url: btn.attr("data-url"),
+				type: 'get',
+				dataType: 'json',
+				beforeSend: function () {
+					$("#modal-comentario").modal("show");
+				},
+				success: function (data) {
+					$("#modal-comentario .modal-content").html(data.html_form);	
+				}
+			});
+		}
+
+		var saveForm = function () {
+			var form = $(this);
+			$.ajax({
+				url: form.attr("action"),
+				data: form.serialize(),
+				type: form.attr("method"),
+				dataType: 'json',
+				success: function (data) {
+					if (data.form_is_valid) {
+						$("#modal-comentario").modal("hide");
+					} else {
+						$("#modal-comentario .modal-content").html(data.html_form);
+					}
+				}
+			});
+			return false
+		}
+
 		$('.expandir').click(function() {
 			var $elemento = $(this);
 			var $registro = $(this).closest('tr');
@@ -23,13 +65,17 @@ Reportes
 					url: '/ajax/reportes/detalleAnalisis/'+ this.innerHTML ,
 					dataType: 'json',
 					success: function (data) {
-						console.log(data);
 						$registro.after(data.html_funcion);
 						$elemento.addClass("mostrar")
 					}
 				});
 			}
 		});
+
+
+		$(".js-comentario").click(loadForm);
+		$("#modal-comentario").on("submit", ".js-comentario-update-form", saveForm);
+
 	})
 </script>
 {% endblock javascript %}
@@ -37,26 +83,35 @@ Reportes
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" />
 	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-	<h1>Reportes</h1>
 	<div>
 	<table id="id_tabla" class="table table-striped table-bordered" style="width:100%">
 		<thead>
 			<tr>
+				<th>Campaña</th>
 				<th>Nombre</th>
 				<th>Fecha</th>
 				<th>Agente</th>
 				<th>Ponderacion</th>
+				<th>Comentarios</th>
 				<th>Reproducir</th>
 			</tr>
 		</thead>
 		<tbody>
-			{% for campaña_fa in campañas %}
+			{% for audio in audios %}
 			<tr>
-				<td class="expandir" id='id_audio'>{{campaña_fa.audio}}</td>
-				<td>{{campaña_fa.fecha}}</td>
-				<td>{{campaña_fa.nombreAgente}}</td>
-				<td style="text-align:center">{{campaña_fa.ponderacion}} %</td>
-				<td><a href="/reproducir/{{campaña_fa.audio}}" class="btn btn-success btn-sm" target="_blank">Abrir Archivo</a></td>
+				<td>{{audio.campaña.nombre}}</td>
+				<td class="expandir" id='id_audio'>{{audio.idInteraccion}}</td>
+				<td>{{audio.inicio}}</td>
+				<td>{{audio.agente.nombre}}</td>
+				<td style="text-align:center">{{audio.ponderacion}} %</td>
+				<td>
+					<button type="button"
+						class="btn btn-danger btn-sm js-comentario"
+						data-url="/ajax/comentario_audio/{{audio.id}}">
+						<span class="glyphicon glyphicon-trash"></span>Comentario
+					</button>
+				</td>
+				<td><a href="/reproducir/{{audio.nombre}}" class="btn btn-success btn-sm" target="_blank"><i class="fa fa-play"></i> Reproducir</a></td>
 			</tr>
 			{% empty %}
 			<tr>
@@ -66,14 +121,22 @@ Reportes
 		</tbody>
 		<tfoot>
 			<tr>
+				<th>Campaña</th>
 				<th>Nombre</th>
 				<th>Fecha</th>
 				<th>Agente</th>
 				<th>Ponderacion</th>
+				<th>Comentarios</th>
 				<th>Reproducir</th>
 			</tr>
 		</tfoot>
 	</table>
+	</div>
+	<div class="modal fade" id="modal-comentario">
+		<div class="modal-dialog">
+			<div class="modal-content">
+			</div>
+		</div>
 	</div>
 	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>
 {% endblock content %}

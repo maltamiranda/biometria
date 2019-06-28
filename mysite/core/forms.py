@@ -1,12 +1,22 @@
 from django import forms
 
-from .models import Audio, Funcion, Palabras, Analisis, Campaña
+from .models import Audio, Funcion, Palabras, Analisis, Campaña, Reporte
 
 
 class AudioForm(forms.ModelForm):
 	class Meta:
 		model = Audio
 		fields = ('id','file')
+
+class ComentarioAudioForm(forms.ModelForm):
+	class Meta:
+		model = Audio
+		fields = ('comentario','id')
+
+class ComentarioReporteForm(forms.ModelForm):
+	class Meta:
+		model = Reporte
+		fields = ('comentario','id')
 
 		
 class FuncionForm(forms.ModelForm):
@@ -26,9 +36,3 @@ class AnalisisForm(forms.ModelForm):
 		model = Analisis
 		fields = ('funciones','fk_campaña')
 		widgets = {'fk_campaña': forms.HiddenInput()}
-		
-	#def __init__(self, *args, **kwargs):
-	#	fk_campaña = kwargs.pop('fk_campaña','')
-	#	super(Campaña_funcionesForm, self).__init__(*args, **kwargs)
-	#	self.fields['fk_campaña']=forms.ModelChoiceField(queryset=Campaña.objects.filter(id=fk_campaña))
-        
