@@ -66,7 +66,8 @@ Reportes
 					dataType: 'json',
 					success: function (data) {
 						$registro.after(data.html_funcion);
-						$elemento.addClass("mostrar")
+						$elemento.addClass("mostrar");
+						$("#id_tablaAnalisis").on("click", ".js-reporteComentario", loadForm);
 					}
 				});
 			}
@@ -75,6 +76,8 @@ Reportes
 
 		$(".js-comentario").click(loadForm);
 		$("#modal-comentario").on("submit", ".js-comentario-update-form", saveForm);
+
+
 
 	})
 </script>

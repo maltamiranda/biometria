@@ -431,18 +431,18 @@ def comentario_audio(request, pk_audio):
 @group_required(('Auditor Reportes', '/accounts/login/'))
 def comentario_reporte(request, pk_reporte):
 	data = dict()
-	audio = get_object_or_404(Reporte, pk=pk_reporte)
+	reporte = get_object_or_404(Reporte, pk=pk_reporte)
 	if request.method == 'POST':
-		form = ComentarioReporteForm(request.POST, instance=audio)
+		form = ComentarioReporteForm(request.POST, instance=reporte)
 		if form.is_valid():
 			form.save()
 			data['form_is_valid'] = True
 	else:
-		form = ComentarioReporteForm(instance=audio)
+		form = ComentarioReporteForm(instance=reporte)
 		print ("Cargo el form")
 	
-	context = {'form':form,'audio':audio}
-	data['html_form'] = render_to_string('includes/comentario_parcial.html',context,request)
+	context = {'form':form,'reporte':reporte}
+	data['html_form'] = render_to_string('includes/comentarioReporte_parcial.html',context,request)
 
 	
 	return JsonResponse(data)
