@@ -448,3 +448,10 @@ def comentario_reporte(request, pk_reporte):
 	return JsonResponse(data)
 
 
+@group_required(('Auditor Graficos', '/accounts/login/'))
+def graficoCampañas(request):
+	return render(request, 'graficos/graficoCampañas.html')
+	#campañas = Campañas.objects.all()
+
+	#for camp in campañas:
+	#	count = 0

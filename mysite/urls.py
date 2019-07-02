@@ -39,6 +39,7 @@ urlpatterns = [
     path('campañas/<int:pk_campaña>/<int:pk_analisis>/<int:pk_reporte>/', views.transcripcion, name='transcripcion'),
     url(r'^buscar/$', views.buscar, name='buscar'),
     path('reproducir/<str:audio>', views.reproducir, name='reproducir'),
+    path('graficos/campañas', views.graficoCampañas, name='graficoCampañas'),
 ]
 
 

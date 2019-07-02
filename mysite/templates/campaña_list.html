@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{%  load static %}
 
 {% block titulo %}
 Campañas
@@ -8,7 +9,11 @@ Campañas
 <script>
 	$(function () {
 		$(document).ready(function() {
-			$('#id_tabla').DataTable();
+			$('#id_tabla').DataTable( {
+        		"language": {
+            		"url": "{% static '/json/Spanish.json ' %}"
+        		}
+    		} );
 		});
 	});
 </script>
@@ -21,9 +26,9 @@ Campañas
 {% endblock %}
 
 {% block content %}
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" />
-	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-	<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/dataTables.bootstrap.min.css' %}" />
+	<script src="{% static '/js/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static '/js/dataTables.bootstrap4.min.js' %}"></script>
 	<table id="id_tabla" class="table table-striped table-bordered" style="width:100%">
 		<thead>
 			<tr>
