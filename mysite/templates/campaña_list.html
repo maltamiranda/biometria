@@ -10,11 +10,59 @@ Campañas
 	$(function () {
 		$(document).ready(function() {
 			$('#id_tabla').DataTable( {
+				"order": [],
+				"iDisplayLength": 10,
         		"language": {
             		"url": "{% static '/json/Spanish.json' %}"
         		}
     		} );
 		});
+
+		var loadForm = function () {
+			var btn = $(this);
+			$.ajax({
+				url: btn.attr("data-url"),
+				type: 'get',
+				dataType: 'json',
+				beforeSend: function () {
+					$("#modal-funciones").modal("show");
+				},
+				success: function (data) {
+					$("#modal-funciones .modal-content").html(data.html_form);
+				}
+			});
+		};
+
+		var saveForm = function () {
+			var form = $(this);
+			$.ajax({
+				url: form.attr("action"),
+				data: form.serialize(),
+				type: form.attr("method"),
+				dataType: 'json',
+				success: function (data) {
+					if (data.form_is_valid) {
+						$("#modal-funciones").modal("hide");
+						$('#id_tabla').DataTable().clear().destroy();
+						$("#id_tabla tbody").html(data.html_tabla_campañas);
+						$('#id_tabla').DataTable( {
+							"order": [],
+							"iDisplayLength": 10,
+        					"language": {
+            					"url": "{% static '/json/Spanish.json' %}"
+        					}
+    					} );
+    					$("#id_tabla").on("click", ".js-configurarFunciones", loadForm);
+				} else {
+					$("#modal-funciones .modal-content").html(data.html_form);
+				}
+			}
+		});
+		return false;
+	};
+
+		$(".js-configurarFunciones").click(loadForm);
+		$("#modal-funciones").on("submit", ".js-campaña-update-form", saveForm);
 	});
 </script>
 {% endblock javascript %}
@@ -33,6 +81,7 @@ Campañas
 		<thead>
 			<tr>
 				<th>Nombre</th>
+				<th>Funciones</th>
 				<th></ht>
 			</tr>
 		</thead>
@@ -40,16 +89,37 @@ Campañas
 			{% for campaña in campañas %}
 			<tr>
 				<td>{{campaña.nombre}}</td>
-				<td><a href="{{campaña.id}}" class="btn btn-info btn-sm">Analizar</a></td>
+				<td>
+					{% for funcion in campaña.fk_funciones.all %}
+						{{funcion}}
+					{% empty %}
+						<i>Sin funciones asignadas</i>
+					{% endfor %}	
+				</td>
+				<td>
+					<button type="button" class="btn btn-info btn-sm js-configurarFunciones" data-url='/ajax/configCampañaFunciones/{{campaña.id}}'>
+						<span class="glyphicon glyphicon-plus"></span>
+						Configurar
+					</button>
+				</td>
 			</tr>
 			{% endfor %}
 		</tbody>
 		<tfoot>
 			<tr>
 				<th>Nombre</th>
+				<th>Funciones</th>
 				<th></ht>
 			</tr>
 		</tfoot>
 	</table>
+
+	<div class="modal fade" id="modal-funciones">
+		<div class="modal-dialog">
+			<div class="modal-content">
+			</div>
+		</div>
+	</div>
+
 	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>
 {% endblock content %}

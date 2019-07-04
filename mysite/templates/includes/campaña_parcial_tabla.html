@@ -1,0 +1,18 @@
+{% for campaña in campañas %}
+	<tr>
+		<td>{{campaña.nombre}}</td>
+		<td>
+		{% for funcion in campaña.fk_funciones.all %}
+			{{funcion}}
+		{% empty %}
+			<i>Sin funciones asignadas</i>
+		{% endfor %}	
+		</td>
+		<td>
+			<button type="button" class="btn btn-info btn-sm js-configurarFunciones" data-url='/ajax/configCampañaFunciones/{{campaña.id}}'>
+				<span class="glyphicon glyphicon-plus"></span>
+				Configurar
+			</button>
+		</td>
+	</tr>
+{% endfor %}

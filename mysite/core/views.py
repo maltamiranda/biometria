@@ -11,10 +11,10 @@ from .filters import ReporteFilter
 
 from django.template.loader import render_to_string
 
-from .forms import AudioForm, FuncionForm, PalabraForm, AnalisisForm, ComentarioReporteForm, ComentarioAudioForm
+from .forms import AudioForm, FuncionForm, PalabraForm, ComentarioReporteForm, ComentarioAudioForm, CampañaFuncionForm
 from .models import Audio
 from .models import Funcion
-from .models import Reporte, Palabras, Campaña, Analisis, Agente
+from .models import Reporte, Palabras, Campaña, Agente
 from .transcriptor import Transcriptor
 from .ponderacion import Evaluador
 
@@ -273,10 +273,9 @@ def cargar_funcion_descripcion(request):
 	}
 	return JsonResponse(data)
 	
-	
 @group_required(('Auditor Campañas', '/accounts/login/'))
 def campañas(request):
-	campañas = Campaña.objects.all()
+	campañas = Campaña.objects.all().order_by('nombre')
 	return render(request, 'campaña_list.html', {'campañas':campañas})
 	
 @group_required(('Auditor Campañas', '/accounts/login/'))
@@ -285,6 +284,25 @@ def campañas_detalle(request, pk_campaña):
 	analisis = Analisis.objects.filter(fk_campaña=campaña)
 	return render(request, 'campaña_detalle.html', {'analisis':analisis,'campaña_nombre':campaña.nombre, 'campaña_id':campaña.id})
 	
+@group_required(('Auditor Campañas', '/accounts/login/'))
+def configCampañaFunciones(request,pk_campaña):
+	data = dict()
+	campaña = get_object_or_404(Campaña, pk=pk_campaña)
+	if request.method == 'POST':
+		form = CampañaFuncionForm(request.POST, instance=campaña)
+		if form.is_valid():
+			form.save()
+			data['form_is_valid'] = True
+			campañas = Campaña.objects.all().order_by('nombre')
+			data["html_tabla_campañas"] = render_to_string('includes/campaña_parcial_tabla.html', {
+				'campañas': campañas})
+	else:
+		form = CampañaFuncionForm(instance=campaña)
+
+	context = {'form':form,'campaña':campaña}
+	data['html_form'] = render_to_string('includes/campaña_parcial_update.html',context,request)
+
+	return JsonResponse(data)
 
 def background_analisis_campaña(campaña, analisis_creado):
 	audios = Audio.objects.filter(campaña=campaña)

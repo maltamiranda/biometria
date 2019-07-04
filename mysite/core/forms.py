@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Audio, Funcion, Palabras, Analisis, Campaña, Reporte
+from .models import Audio, Funcion, Palabras, Campaña, Reporte
 
 
 class AudioForm(forms.ModelForm):
@@ -30,9 +30,14 @@ class PalabraForm(forms.ModelForm):
 		fields = ('palabra','porcentaje','fk_funcion')
 		widgets = {'fk_funcion': forms.HiddenInput()}
 		
-class AnalisisForm(forms.ModelForm):
+#class AnalisisForm(forms.ModelForm):
 	#widgets={'funciones':forms.CheckboxSelectMultiple}
+#	class Meta:
+#		model = Analisis
+#		fields = ('funciones','fk_campaña')
+#		widgets = {'fk_campaña': forms.HiddenInput()}
+
+class CampañaFuncionForm(forms.ModelForm):
 	class Meta:
-		model = Analisis
-		fields = ('funciones','fk_campaña')
-		widgets = {'fk_campaña': forms.HiddenInput()}
+		model = Campaña
+		fields = ('fk_funciones',)

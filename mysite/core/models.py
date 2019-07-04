@@ -4,6 +4,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 class Campaña(models.Model):
 	nombre = models.CharField(max_length=80, unique=True)
+	fk_funciones = models.ManyToManyField('Funcion',limit_choices_to = {'estado': 1})
 	
 	def __str__(self):
 		return self.nombre
@@ -60,17 +61,17 @@ class Palabras(models.Model):
 	def __str__(self):
 		return self.palabra
 		
-class Analisis(models.Model):
-	created = models.DateTimeField(auto_now_add=True)
-	funciones = models.ManyToManyField('Funcion',limit_choices_to = {'estado': 1})
-	fk_campaña = models.ForeignKey(Campaña, related_name='fk_campaña', on_delete=models.CASCADE, default=None)
-	
-	def getFunciones(self):
-		temp = ''
-		for f in self.funciones.all():
-			temp = temp+f.nombre+','
-			
-		return temp[:-1]
+#class Analisis(models.Model):
+#	created = models.DateTimeField(auto_now_add=True)
+#	funciones = models.ManyToManyField('Funcion',limit_choices_to = {'estado': 1})
+#	fk_campaña = models.ForeignKey(Campaña, related_name='fk_campaña', on_delete=models.CASCADE, default=None)
+#	
+#	def getFunciones(self):
+#		temp = ''
+#		for f in self.funciones.all():
+#			temp = temp+f.nombre+','
+#			
+#		return temp[:-1]
 		
 		
 class Reporte(models.Model):
@@ -78,7 +79,7 @@ class Reporte(models.Model):
 	ponderacion = models.IntegerField()
 	fk_funcion = models.ForeignKey(Funcion, related_name='funcion_reporte', on_delete=models.CASCADE)
 	fk_audio = models.ForeignKey(Audio, related_name='audio', on_delete=models.CASCADE)
-	fk_analisis = models.ForeignKey(Analisis, related_name='fk_analisis', on_delete=models.CASCADE,default=None)
+	#fk_analisis = models.ForeignKey(Analisis, related_name='fk_analisis', on_delete=models.CASCADE,default=None)
 	canal_1 = models.TextField(max_length=10000, default="")
 	canal_2 = models.TextField(max_length=10000, default="")
 	nombre_agente = models.CharField(max_length=255)
@@ -91,7 +92,8 @@ class Reporte(models.Model):
 		return self.nombre_audio
 	
 	class Meta:
-		unique_together = (("fk_audio", "fk_analisis","fk_funcion"),)
+		unique_together = (("fk_audio","fk_funcion"),)
+		#unique_together = (("fk_audio", "fk_analisis","fk_funcion"),)
 #class Lote(models.Model):
 
 
