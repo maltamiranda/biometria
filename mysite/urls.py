@@ -20,6 +20,7 @@ urlpatterns = [
     path('ajax/borrar_palabra/<int:pk_funcion>/<int:pk_palabra>', views.borrar_palabra, name='borrar_palabra'),
     path('ajax/reportes/detalleAnalisis/<str:audio>', views.detalleAnalisis, name='detalleAnalisis'),
 	path('ajax/cambiarEstado/<int:pk_funcion>', views.cambiarEstado, name='cambiarEstado'),
+    path('ajax/cargar_funcion_descripcion/', views.cargar_funcion_descripcion, name='cargar_funcion_descripcion'),
     #path('audios/analizar/<int:pk>/', views.analizar, name='analizar'),
     #path('test/', views.test, name='test'),
     #path('audios/', views.audio_list, name='audio_list'),
@@ -30,7 +31,6 @@ urlpatterns = [
 	path('reportes/play/<int:pk>/', views.reproducir, name='reproducir'),
     #path('singup/', views.singup, name='singup'),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('ajax/cargar_funcion_descripcion/', views.cargar_funcion_descripcion, name='cargar_funcion_descripcion'),
     path('campañas/', views.campañas, name='campañas'),
     path('campañas/<int:pk_campaña>/', views.campañas_detalle, name='campañas_detalle'),
     path('campañas/<int:pk_campaña>/crear', views.capañas_detalle_crear, name='capañas_detalle_crear'),
@@ -39,7 +39,9 @@ urlpatterns = [
     path('campañas/<int:pk_campaña>/<int:pk_analisis>/<int:pk_reporte>/', views.transcripcion, name='transcripcion'),
     url(r'^buscar/$', views.buscar, name='buscar'),
     path('reproducir/<str:audio>', views.reproducir, name='reproducir'),
+    path('graficos', views.graficos, name='graficos'),
     path('graficos/campañas', views.graficoCampañas, name='graficoCampañas'),
+    path('graficos/agentes', views.graficoAgentes, name='graficoAgentes'),
 ]
 
 

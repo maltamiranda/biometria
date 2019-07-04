@@ -1,37 +1,26 @@
 {% extends "base.html" %}
 
 {% block titulo %}
-Audios
+Graficos
 {% endblock titulo %}
 
+{% block breadcrumb %}
+	<ol class="breadcrumb my-4 bg-dark">
+			<li class="breadcrumb-item text-white">Graficos</li>
+	</ol>
+{% endblock %}
+
 {% block content %}
-	<h1>Funciones</h1>
+	<h1>Graficos</h1>
 
-	<a href="{% url 'funciones_crear' %}" class="btn btn-primary btn-sm">Crear Funcion</a>
-
-	<table class="table mb-0">
-		<thead>
-			<tr>
-				<th>Funcion</th>
-				<th>Descripcion</th>
-				<th>Ver</th>
-				<th>Borrar</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for funcion in funciones %}
-			<tr>
-				<td>{{funcion.nombre}}</td>
-				<td>{{funcion.descripcion}}</td>
-				<td>{{funcion.get_estado_display}}</td>
-				<td><a href="{{funcion.id}}" class="btn btn-info btn-sm">Detalle</a></td>
-				<td>
-					<form method="post" action="{{funcion.id}}/borrar">
-						{% csrf_token %}
-						<button type="submit" class="btn btn-danger btn-sm" style='border-radius: 20px;'>Borrar</button>
-					</form></td>
-			</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+	<div>
+		<dl>
+			<dt class="col-sm-3 btn btn-warning"><a href="graficos/campañas"><b>Ponderacion Campañas</b></a></dt>
+			<dd class="col-sm-9 align-middle">Grafico de barra horizontal mostrando el promedio de la ponderacion de los audios por campaña.</dd>
+			<dt class="col-sm-3 btn btn-warning"><a href="graficos/agentes"><b>Ponderacion Agentes</b></a></dt>
+			<dd class="col-sm-9">Grafico de barra horizontal mostrando el promedio de la ponderacion de los audios por agente.</dd>
+		</dl>
+	</div>
+	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>
+	</div>
 {% endblock content %}

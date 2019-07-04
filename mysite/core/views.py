@@ -14,7 +14,7 @@ from django.template.loader import render_to_string
 from .forms import AudioForm, FuncionForm, PalabraForm, AnalisisForm, ComentarioReporteForm, ComentarioAudioForm
 from .models import Audio
 from .models import Funcion
-from .models import Reporte, Palabras, Campaña, Analisis
+from .models import Reporte, Palabras, Campaña, Analisis, Agente
 from .transcriptor import Transcriptor
 from .ponderacion import Evaluador
 
@@ -449,9 +449,29 @@ def comentario_reporte(request, pk_reporte):
 
 
 @group_required(('Auditor Graficos', '/accounts/login/'))
-def graficoCampañas(request):
-	return render(request, 'graficos/graficoCampañas.html')
-	#campañas = Campañas.objects.all()
+def graficos(request):
+	return render(request, 'graficos.html')
 
-	#for camp in campañas:
-	#	count = 0
+@group_required(('Auditor Graficos', '/accounts/login/'))
+def graficoCampañas(request):
+	campañas = Campaña.objects.all()
+	campañasNombre = []
+	campañasPromedio = []
+	for camp in campañas:
+		campañasNombre.append(str(camp))
+		campañasPromedio.append(random.randint(0,100))
+	altura = len(campañasNombre) * 8
+	return render(request, 'graficos/graficoCampañas.html',{'campañasNombre':campañasNombre[:20],'campañasPromedio':campañasPromedio[:20],'altura':altura})
+
+@group_required(('Auditor Graficos', '/accounts/login/'))
+def graficoAgentes(request):
+	agentes = Agente.objects.all()
+	agentesNombre = []
+	agentesPromedio = []
+	for agente in agentes:
+		agentesNombre.append(str(agente))
+		agentesPromedio.append(random.randint(0,100))
+	altura = len(agentesNombre) * 12
+	return render(request, 'graficos/graficoAgentes.html',
+		{'agentesNombre':agentesNombre,
+		'agentesPromedio':agentesPromedio,'altura':altura})

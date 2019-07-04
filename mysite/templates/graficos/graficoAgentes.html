@@ -8,9 +8,10 @@ Grafico Campañas
 {% block breadcrumb %}
 	<ol class="breadcrumb my-4 bg-dark">
 		<li class="breadcrumb-item"><a href="{% url 'graficos' %}"><u>Graficos</u></a></li>
-		<li class="breadcrumb-item text-white">Ponderacion Campañas</li>
+		<li class="breadcrumb-item text-white">Ponderacion Agentes</li>
 	</ol>
 {% endblock %}
+
 
 {% block javascript %}
 
@@ -37,13 +38,13 @@ Grafico Campañas
 		var MONTHS = ['February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 		var color = Chart.helpers.color;
 		var horizontalBarChartData = {
-			labels: {{campañasNombre|safe}},
+			labels: {{agentesNombre|safe}},
 			datasets: [{
 				label: 'Ponderacion',
 				backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
 				borderColor: window.chartColors.red,
 				borderWidth: 1,
-				data: {{campañasPromedio|safe}},
+				data: {{agentesPromedio|safe}},
 			} ]
 
 		};
@@ -68,7 +69,7 @@ Grafico Campañas
 					},
 					title: {
 						display: true,
-						text: 'Ponderacion promedio de los audios por campaña'
+						text: 'Ponderacion promedio de los audios por agente'
 					}
 				}
 			});

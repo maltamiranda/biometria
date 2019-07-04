@@ -11,6 +11,9 @@ class Campaña(models.Model):
 class Agente(models.Model):
 	nombre = models.CharField(max_length=60, unique=True, default="")
 
+	def __str__(self):
+		return self.nombre
+
 class Audio(models.Model):
 	file = models.FileField(upload_to='audios/files/',default=None)
 	inicio = models.DateTimeField(default=None)
