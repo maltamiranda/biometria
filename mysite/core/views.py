@@ -262,9 +262,25 @@ def borrar_palabra(request,pk_funcion,pk_palabra):
 	funcion = Funcion.objects.get(pk=pk_funcion)
 	data['html_funcion'] = render_to_string('includes/funcion_parcial_detalle.html',{'funcion':funcion},request)
 	
-	
 	return JsonResponse(data)
 	
+@group_required(('Auditor Funciones', '/accounts/login/'))
+def borrar_funcion(request,pk_funcion):
+	data = dict()
+	funcion = get_object_or_404(Funcion, pk=pk_funcion)
+	if request.method == 'POST':
+		funcion.delete()
+		data['form_is_valid'] = True  # This is just to play along with the existing code
+		funciones = Funcion.objects.all()
+		data['html_tabla_funciones'] = render_to_string('includes/funcion_parcial_tabla.html', {
+				'funciones': funciones})
+	else:
+		context = {'funcion':funcion,'pk_funcion':pk_funcion}
+		data['html_form'] = render_to_string('includes/funcion_parcial_borrar.html',
+		context,request)
+	
+	return JsonResponse(data)
+
 @login_required
 def cargar_funcion_descripcion(request):
 	id = request.POST['funcion_id']

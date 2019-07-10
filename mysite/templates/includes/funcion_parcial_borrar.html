@@ -1,0 +1,16 @@
+<form method="post" action="/ajax/borrar_funcion/{{pk_funcion}}" class="js-funcion-borrar-form">
+  {% csrf_token %}
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title">Confirmar borrado</h4>
+  </div>
+  <div class="modal-body">
+    <p class="lead">Desea eliminar la funcion <strong>{{ funcion }}</strong>?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+    <button type="submit" class="btn btn-danger">Borrar funcion</button>
+  </div>
+</form>

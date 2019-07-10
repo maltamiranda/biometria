@@ -10,10 +10,57 @@ Audios
 	</ol>
 {% endblock %}
 
+{% block javascript %}
+<script>
+	$(function () {
+
+		var loadForm = function () {
+			var btn = $(this);
+			$.ajax({
+				url: btn.attr("data-url"),
+				type: 'get',
+				dataType: 'json',
+				beforeSend: function () {
+				$("#modal-funcion").modal("show");
+				},
+				success: function (data) {
+				$("#modal-funcion .modal-content").html(data.html_form);
+				
+				}
+			});
+		};
+
+		var saveForm = function () {
+			var form = $(this);
+			$.ajax({
+				url: form.attr("action"),
+				data: form.serialize(),
+				type: form.attr("method"),
+				dataType: 'json',
+				success: function (data) {
+					if (data.form_is_valid) {
+						$("#tabla_funcion tbody").html(data.html_tabla_funciones);
+						$("#modal-funcion").modal("hide");
+					} else {
+						$("#modal-funcion .modal-content").html(data.html_form);
+					}
+				}
+			});
+			return false;
+		};
+
+
+		//Borrar funcion
+		$("#tabla_funcion").on("click", ".js-borrar-funcion", loadForm);
+		$("#modal-funcion").on("submit", ".js-funcion-borrar-form", saveForm);
+	});
+</script>
+{% endblock %}
+
 {% block content %}
 	<a href="{% url 'funciones_crear' %}" class="btn btn-primary btn-sm">Crear Funcion</a>
 
-	<table class="table mb-0">
+	<table id="tabla_funcion" class="table mb-0">
 		<thead>
 			<tr>
 				<th>Funcion</th>
@@ -30,13 +77,23 @@ Audios
 				<td>{{funcion.get_estado_display}}</td>
 				<td><a href="{{funcion.id}}" class="btn btn-info btn-sm">Detalle</a></td>
 				<td>
-					<form method="post" action="{{funcion.id}}/borrar">
-						{% csrf_token %}
-						<button type="submit" class="btn btn-danger btn-sm" style='border-radius: 20px;'>Borrar</button>
-					</form></td>
+					<button type="button"
+						class="btn btn-danger btn-sm js-borrar-funcion"
+						data-url="/ajax/borrar_funcion/{{funcion.id}}">
+						<span class="glyphicon glyphicon-trash"></span>Borrar
+					</button>
+				</td>
 			</tr>
 			{% endfor %}
 		</tbody>
 	</table>
+
+	<div class="modal fade" id="modal-funcion">
+		<div class="modal-dialog">
+			<div class="modal-content">
+			</div>
+		</div>
+	</div>
+
 	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>
 {% endblock content %}
