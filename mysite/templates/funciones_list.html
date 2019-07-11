@@ -13,7 +13,6 @@ Audios
 {% block javascript %}
 <script>
 	$(function () {
-
 		var loadForm = function () {
 			var btn = $(this);
 			$.ajax({
@@ -29,7 +28,6 @@ Audios
 				}
 			});
 		};
-
 		var saveForm = function () {
 			var form = $(this);
 			$.ajax({
@@ -48,8 +46,6 @@ Audios
 			});
 			return false;
 		};
-
-
 		//Borrar funcion
 		$("#tabla_funcion").on("click", ".js-borrar-funcion", loadForm);
 		$("#modal-funcion").on("submit", ".js-funcion-borrar-form", saveForm);

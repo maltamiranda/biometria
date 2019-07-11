@@ -14,11 +14,12 @@ Crear funcion
 {% endblock %}
 
 {% block content %}
+	<div>
 	<form method="post" novalidate>
 		{% csrf_token %}
-		{% include 'includes/form.html' %}
 		<button type='submit' class='btn btn-primary btn-large btn-start text-right'>Crear</button>
+		<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="location.href='{% url 'funciones_list' %}';">Salir</button>
+		{% include 'includes/form.html' %}
 	</form>
-	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>
 	</div>
 {% endblock content %}

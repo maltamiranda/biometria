@@ -1,0 +1,12 @@
+<div id="id_funcionDetalle">
+	<dl class="row">
+	<dt class="col-sm-3">Nombre de la funcion</dt>
+	<dd class="col-sm-9">{{funcion.nombre}}</dd>
+	<dt class="col-sm-3">Descripcion de la funcion</dt>
+	<dd class="col-sm-9">{{funcion.descripcion}}</dd>
+	<dt class="col-sm-3">Ponderacion</dt>
+	<dd class="col-sm-9 font-weight-bold" id="id_ponderacion" >{{funcion.ponderacion}}%</dd>
+	<dt class="col-sm-3" style="display:none;">Estado</dt>
+	<dd class="col-sm-9" id="id_estado" style="display:none;">{{funcion.get_estado_display}}</dd>
+	</dl>
+</div>

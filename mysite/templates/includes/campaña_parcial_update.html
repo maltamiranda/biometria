@@ -10,16 +10,10 @@
   </div>
   <div class="modal-body">
     {% for field in form.visible_fields  %}
-    <div class="form-group{% if field.errors %} has-error{% endif %}">
+    <div class="form-group">
       <label for="{{ field.id_for_label }}">Funciones</label>
-      {% render_field field class="form-control" %}
-      {% for error in field.errors %}
-        <p class="help-block">{{ error }}</p>
-      {% endfor %}
+      {% render_field field class="form-control" %} {{field.descripcion}}
     </div>
-    {% endfor %}
-    {% for hidden in form.hidden_fields %}
-      {{ hidden }}
     {% endfor %}
   </div>
   <div class="modal-footer">
