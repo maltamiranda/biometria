@@ -12,22 +12,27 @@ Transcripcion
 {% endblock %}
 
 {% block content %}
-	<div>
+    <a href="{% url 'reportes' %}" class="btn btn-primary">Salir</a>
+	<hr>
+    <div>
 		{% include 'includes/reporte_parcial_detalle.html' %}
 	</div>
-	<table class="table mb-0">
-		<thead>
-			<tr>
-				<th style="width: 50%">Canal 1 / Operador</th>
-				<th style="width: 50%">Canal 2 / Cliente</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>{{reporte.canal_1|safe}}</td>
-				<td>{{reporte.canal_2}}</td>
-			</tr>
-		</tbody>
-	</table>
-	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>
+    <div>
+        <hr>
+        <h3>Transcripcion</h3>
+	    <table class="table mb-0 table-bordered">
+		    <thead>
+			    <tr>
+				    <th style="width: 50%">Canal 1 / Operador</th>
+				    <th style="width: 50%">Canal 2 / Cliente</th>
+			    </tr>
+		    </thead>
+		    <tbody>
+			    <tr>
+			    	<td>{{reporte.canal_1|safe}}</td>
+			    	<td>{{reporte.canal_2}}</td>
+			    </tr>
+		    </tbody>
+	    </table>
+    </div>
 {% endblock content %}

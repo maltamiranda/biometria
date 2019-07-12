@@ -12,7 +12,7 @@
     {% for field in form.visible_fields  %}
     <div class="form-group">
       <label for="{{ field.id_for_label }}">Funciones</label>
-      {% render_field field class="form-control" %} {{field.descripcion}}
+      {% render_field field class="form-control" %}
     </div>
     {% endfor %}
   </div>

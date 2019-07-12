@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from mysite.core.models import Audio, Agente, Campaña
+from mysite.core.models import Audio, Agente, Campaña, Funcion, Palabras, Reporte
 import os
 from datetime import datetime
 from mysite.core.transcriptor import Transcriptor
@@ -14,8 +14,8 @@ class Command(BaseCommand):
     
     def _cargarReportes(self):
         audios = Audio.objects.all()
-        funciones = analisis_creado.funciones.all()
         for a in audios:
+            funciones = a.campaña.fk_funciones.all()
             for f in funciones:
                 e = Evaluador()
                 suma = e.ponderizar(a.canal_1.lower(), Palabras.objects.filter(fk_funcion=f))
@@ -61,7 +61,19 @@ class Command(BaseCommand):
         Audio.objects.create(file="audios/files/llamado_provincia.wav",inicio=datetime.strptime("01/03/2019 8:57", "%d/%m/%Y %H:%M"), idInteraccion="a80984_2_190301085653361_IVR_07040", agente=Agente.objects.get(nombre="Sanmarco Jonatan Pablo Ivan"), campaña=Campaña.objects.get(nombre="Mesa Ayuda Banca Internet"))
         Audio.objects.create(file="audios/files/llamado_provincia_extenso.wav",inicio=datetime.strptime("01/03/2019 9:02", "%d/%m/%Y %H:%M"), idInteraccion="a80984_2_190301090132123_IVR_06041", agente=Agente.objects.get(nombre="Sanmarco Jonatan Pablo Ivan"), campaña=Campaña.objects.get(nombre="Mesa Ayuda Banca Internet"))
     
+    def _cargarPonderacionAudio(self):
+        audios = Audio.objects.all()
+        for a in audios:
+            pond = 0
+            cant = 0
+            for r in Reporte.objects.filter(fk_audio=a):
+                pond = pond + r.ponderacion
+                cant += 1
+            a.ponderacion = pond/cant
+            a.save()
+
     def handle(self, *args, **options):
         #self._cargarAudios()
         #self._cargarTranscripciones()
-        self._cargarReportes()
+        #self._cargarReportes()
+        self._cargarPonderacionAudio()

@@ -120,7 +120,7 @@ Reportes
 						<span class="glyphicon glyphicon-trash"></span>Comentario
 					</button>
 				</td>
-				<td><a href="/reproducir/{{audio.nombre}}" class="btn btn-success btn-sm" target="_blank"><i class="fa fa-play"></i> Reproducir</a></td>
+				<td><a href="{{audio.file.url}}" class="btn btn-success btn-sm" target="_blank"><i class="fa fa-play"></i> Reproducir</a></td>
 			</tr>
 			{% empty %}
 			<tr>
@@ -136,5 +136,5 @@ Reportes
 			</div>
 		</div>
 	</div>
-	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>
+	<button type='button' class='btn btn-primary btn-sm btn-skip' onclick="location.href='{% url 'home' %}';" style="width:99px;">Salir</button>
 {% endblock content %}

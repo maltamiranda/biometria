@@ -126,23 +126,20 @@ def detalleAnalisis(request, audio):
 	
 @login_required
 def reporte_generado(request, pk_reporte):
-	reporte = Reporte.objects.get(pk=pk_reporte)
-	analisis = get_object_or_404(Analisis, pk=reporte.fk_analisis.pk)
-	campaña =get_object_or_404(Campaña, pk=analisis.fk_campaña.pk)
-	palabras = Palabras.objects.filter(fk_funcion=reporte.fk_funcion)
-	return render(request, 'reporte_generado.html', {'reporte':reporte,
-													'analisis':analisis,
+    reporte = Reporte.objects.get(pk=pk_reporte)
+    audio = Audio.objects.get(pk=reporte.fk_audio.pk)
+    campaña =get_object_or_404(Campaña, pk=audio.campaña.pk)
+    palabras = Palabras.objects.filter(fk_funcion=reporte.fk_funcion)
+    return render(request, 'reporte_generado.html', {'reporte':reporte,
 													'campaña':campaña,
 													'palabras':palabras})
 
 @group_required(('Auditor Funciones', '/accounts/login/'))
-#@login_required
 def funciones_list(request):
 	funcion = Funcion.objects.all()
 	return render(request, 'funciones_list.html', {"funciones":funcion})
 
 @group_required(('Auditor Funciones', '/accounts/login/'))
-#@login_required
 def funciones_crear(request):
 	if request.method == 'POST':
 		form = FuncionForm(request.POST)
@@ -154,7 +151,6 @@ def funciones_crear(request):
 		return render(request, 'funciones_crear.html', {'form':form})
 
 @group_required(('Auditor Funciones', '/accounts/login/'))
-#@login_required
 def funciones_detalle(request, pk):
 	funcion = Funcion.objects.get(pk=pk)
 	palabras = Palabras.objects.filter(fk_funcion=funcion.id)
@@ -323,7 +319,6 @@ def configCampañaFunciones(request,pk_campaña):
 def background_analisis_campaña(campaña, analisis_creado):
 	audios = Audio.objects.filter(campaña=campaña)
 	funciones = analisis_creado.funciones.all()
-	
 	for a in audios:
 		for f in funciones:
 			e = Evaluador()

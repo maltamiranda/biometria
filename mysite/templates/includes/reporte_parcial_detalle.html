@@ -1,22 +1,28 @@
 <div id="id_funcionDetalle">
 	<h3>Funcion</h3>
-	<dl class="row">
-	<dt class="col-sm-3">Nombre de la funcion</dt>
-	<dd class="col-sm-9">{{reporte.fk_funcion.nombre}}</dd>
-	<dt class="col-sm-3">Descripcion de la funcion</dt>
-	<dd class="col-sm-9">{{reporte.fk_funcion.descripcion}}</dd>
-	<dt class="col-sm-3">Ponderacion</dt>
-	<dd class="col-sm-9">{{reporte.ponderacion}} %</dd>
-	</dl>
+	<table class="table mb-0 table-bordered" style="border: thick solid">
+	    <tr>
+            <td style="width:25%;" class="font-weight-bold">Nombre de la funcion</td>
+	        <td >{{reporte.fk_funcion.nombre}}</td>
+	    </tr>
+        <tr>
+            <td class="font-weight-bold">Descripcion de la funcion</td>
+	        <td >{{reporte.fk_funcion.descripcion}}</td>
+	    </tr>
+        <tr>
+            <td class="font-weight-bold">Ponderacion</td>
+	        <td class="font-weight-bold" id="id_ponderacion" >{{reporte.ponderacion}}%</td>
+	    </tr>
+    </table>
 </div>
+<hr>
 <div>
 	<h3>Palabras</h3>
-</div>
-<div>
-<table class="table">
+
+<table class="table table-bordered" >
 	<thead>
 		<tr>
-			<th>Palabra</th>
+			<th style="width: 84%">Palabra</th>
 			<th>Valor</th>
 		</tr>
 	</thead>
@@ -29,7 +35,5 @@
 		{% endfor %}
 	</tbody>
 </table>
-</div>
-<div>
-	<h3>Transcripcion</h3>
+	
 </div>

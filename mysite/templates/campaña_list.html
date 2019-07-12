@@ -82,7 +82,7 @@ Campañas
 			<tr>
 				<th>Nombre</th>
 				<th>Funciones</th>
-				<th></ht>
+				<th style="width:5%;"></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -114,5 +114,5 @@ Campañas
 		</div>
 	</div>
 
-	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>
+	<button type='button' class='btn btn-primary btn-sm btn-skip' onclick="location.href='{% url 'home' %}';" style="width:99px;">Salir</button>
 {% endblock content %}

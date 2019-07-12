@@ -1,7 +1,7 @@
 {% for palabra in palabras %}
 <tr>
 	<td>{{ palabra.palabra }}</td>
-	<td>{{ palabra.porcentaje }}% &nbsp 
+	<td style="text-align:right">{{ palabra.porcentaje }}% &nbsp 
 		<button type="button"
 				class="btn btn-warning btn-sm js-update-palabra"
 				data-url='/ajax/editar_palabra/{{funcion.id}}/{{palabra.id}}'>

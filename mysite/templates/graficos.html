@@ -11,7 +11,9 @@ Graficos
 {% endblock %}
 
 {% block content %}
-	<h1>Graficos</h1>
+    <button type='button' class='btn btn-primary btn-large btn-skip' onclick="location.href='{% url 'home' %}';" style="width:99px;">Salir</button>
+    <br>
+    <h1>Graficos</h1>
 
 	<div>
 		<dl>
@@ -20,7 +22,5 @@ Graficos
 			<dt class="col-sm-3 btn btn-warning"><a href="graficos/agentes"><b>Ponderacion Agentes</b></a></dt>
 			<dd class="col-sm-9">Grafico de barra horizontal mostrando el promedio de la ponderacion de los audios por agente.</dd>
 		</dl>
-	</div>
-	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>
 	</div>
 {% endblock content %}

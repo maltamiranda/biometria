@@ -55,14 +55,13 @@ Audios
 
 {% block content %}
 	<a href="{% url 'funciones_crear' %}" class="btn btn-primary btn-sm">Crear Funcion</a>
+    <a href="{% url 'home' %}" class="btn btn-primary btn-sm" style="width:99.22px;">Salir</a>
 
-	<table id="tabla_funcion" class="table mb-0">
+	<table id="tabla_funcion" class="table mb-0 table-bordered">
 		<thead>
 			<tr>
 				<th>Funcion</th>
-				<th>Descripcion</th>
-				<th>Ver</th>
-				<th>Borrar</th>
+				<th colspan="4">Descripcion</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -71,7 +70,7 @@ Audios
 				<td>{{funcion.nombre}}</td>
 				<td>{{funcion.descripcion}}</td>
 				<td>{{funcion.get_estado_display}}</td>
-				<td><a href="{{funcion.id}}" class="btn btn-info btn-sm">Detalle</a></td>
+				<td><a href="{{funcion.id}}" class="btn btn-info btn-sm">Ponderizar</a></td>
 				<td>
 					<button type="button"
 						class="btn btn-danger btn-sm js-borrar-funcion"
@@ -90,6 +89,4 @@ Audios
 			</div>
 		</div>
 	</div>
-
-	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>
 {% endblock content %}

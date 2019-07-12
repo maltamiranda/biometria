@@ -9,16 +9,16 @@ Crear funcion
 {% block breadcrumb %}
 <ol class="breadcrumb my-4 bg-dark">
 		<li class="breadcrumb-item"><a href="{% url 'funciones_list' %}">Funciones</a></li>
-		<li class="breadcrumb-item active">Creacion</li>
 	</ol>
 {% endblock %}
 
 {% block content %}
-	<div>
+    <div>
 	<form method="post" novalidate>
 		{% csrf_token %}
-		<button type='submit' class='btn btn-primary btn-large btn-start text-right'>Crear</button>
-		<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="location.href='{% url 'funciones_list' %}';">Salir</button>
+		<button type='submit' class='btn btn-primary btn-sm btn-start text-center' style="width:99px;">Crear</button>
+		<button type='button' class='btn btn-primary btn-sm btn-skip text-center' style="width:99px;" onclick="location.href='{% url 'funciones_list' %}';">Salir</button>
+	<hr style="visibility:hidden">
 		{% include 'includes/form.html' %}
 	</form>
 	</div>
