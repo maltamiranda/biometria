@@ -58,7 +58,6 @@ def funciones(request):
 
 
 def background_analisis(audio, funcion, palabras):
-	print ("inicio de analisis de" + str(audio.file))
 	palabras_funcion = {}
 	for m in palabras:
 		palabras_funcion[str(m.palabra)] = int(m.porcentaje)
@@ -81,7 +80,6 @@ def background_analisis(audio, funcion, palabras):
 		nombre = funcion.nombre,
 		nombre_audio = audio.file
 		)
-	print ("finalizo el reporte de" + str(audio.file))
 	
 @login_required
 def analizar(request, pk):
@@ -190,10 +188,7 @@ def crear_palabra(request, pk_funcion):
 	data = dict()
 	if request.method == 'POST':
 		form = PalabraForm(request.POST,initial={'fk_funcion':pk_funcion})
-		print (form)
-		print (form.instance.fk_funcion)
 		form.instance.fk_funcion=Funcion.objects.get(id=pk_funcion)
-		print (form.instance.fk_funcion)
 		if form.is_valid():
 			form.save()
 			data['form_is_valid'] = True
@@ -449,7 +444,6 @@ def comentario_audio(request, pk_audio):
 			data['form_is_valid'] = True
 	else:
 		form = ComentarioAudioForm(instance=audio)
-		print ("Cargo el form")
 	
 	context = {'form':form,'audio':audio}
 	data['html_form'] = render_to_string('includes/comentario_parcial.html',context,request)
@@ -468,7 +462,6 @@ def comentario_reporte(request, pk_reporte):
 			data['form_is_valid'] = True
 	else:
 		form = ComentarioReporteForm(instance=reporte)
-		print ("Cargo el form")
 	
 	context = {'form':form,'reporte':reporte}
 	data['html_form'] = render_to_string('includes/comentarioReporte_parcial.html',context,request)
