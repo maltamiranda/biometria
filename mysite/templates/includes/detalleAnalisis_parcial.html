@@ -11,8 +11,8 @@
 	<tbody>
 		{% for reporte in reportes %}
 		<tr>
-			<td>{{reporte.fk_funcion.nombre}}</td>
-			<td style="text-align:center">{{reporte.ponderacion}} %</td>
+			<td>{{reporte.fk_funcion.nombre}} - <i>{{reporte.fk_funcion.descripcion}}</i></td>
+			<td style="text-align:center">{{reporte.ponderacion|floatformat:2}} %</td>
 			<td style="text-align:center">
 					<button type="button"
 						class="btn btn-warning btn-sm js-reporteComentario"

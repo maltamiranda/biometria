@@ -64,7 +64,7 @@ class Command(BaseCommand):
     def _cargarPonderacionAudio(self):
         audios = Audio.objects.all()
         for a in audios:
-            pond = 0
+            pond = 0.00
             cant = 0
             for r in Reporte.objects.filter(fk_audio=a):
                 pond = pond + r.ponderacion

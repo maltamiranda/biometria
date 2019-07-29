@@ -111,7 +111,11 @@ def analizar(request, pk):
 @group_required(('Auditor Reportes', '/accounts/login/'))
 def reportes(request):
 	audios = Audio.objects.all()
-	return render(request, 'reportes.html', {'audios':audios})
+	reporte_filter = ReporteFilter(request.GET, queryset=audios)
+	return render(request, 'buscar.html',{'filter': reporte_filter})
+#def reportes(request):
+#	audios = Audio.objects.all()
+#	return render(request, 'reportes.html', {'audios':audios})
 	
 def detalleAnalisis(request, audio):
 	data = dict()
@@ -427,8 +431,8 @@ def cambiarEstado(request, pk_funcion):
 
 
 def buscar(request):
-	reportes = Reporte.objects.all()
-	reporte_filter = ReporteFilter(request.GET, queryset=reportes)
+	audios = Audio.objects.all()
+	reporte_filter = ReporteFilter(request.GET, queryset=audios)
 	return render(request, 'buscar.html',{'filter': reporte_filter})
 
 

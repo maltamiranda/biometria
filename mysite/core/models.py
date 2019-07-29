@@ -24,7 +24,7 @@ class Audio(models.Model):
 	canal_1 = models.TextField(max_length=10000, default="")
 	canal_2 = models.TextField(max_length=10000, default="")
 	comentario = models.TextField(max_length=10000, default="")
-	ponderacion = models.IntegerField(default=0)
+	ponderacion = models.FloatField(default=0)
 
 	
 	def __str__(self):
@@ -48,7 +48,7 @@ class Funcion(models.Model):
 	estado = models.PositiveSmallIntegerField(choices=ESTADOS, default=2)
 	
 	def __str__(self):
-		return self.nombre
+		return (self.nombre + " - " + self.descripcion)
 
 class Palabras(models.Model):
 	fk_funcion = models.ForeignKey(Funcion, related_name='funcion', on_delete=models.CASCADE)

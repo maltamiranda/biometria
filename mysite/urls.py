@@ -29,6 +29,7 @@ urlpatterns = [
     #path('audios/upload/', views.upload_audio, name='upload_audio'),
     #path('audios/<int:pk>/', views.delete_audio, name='delete_audio'),
     path('reportes/<int:pk_reporte>/', views.reporte_generado, name='reporte_generado'),
+    #path('reportes/', views.buscar, name='buscar'),
     path('reportes/', views.reportes, name='reportes'),
 	path('reportes/play/<int:pk>/', views.reproducir, name='reproducir'),
     #path('singup/', views.singup, name='singup'),
