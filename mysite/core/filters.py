@@ -8,6 +8,6 @@ class ReporteFilter(django_filters.FilterSet):
         model = Audio
         fields = {'ponderacion': ['lt'],
                     'agente__nombre':['icontains'],
-                    'idInteraccion':['icontains']}
+                    'campaña__nombre':['icontains']}
                     #'campaña__nombre':['icontains']}
         #fields = ['ponderacion','nombre_agente','nombre_audio','nombre_campaña']
