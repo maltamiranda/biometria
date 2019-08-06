@@ -42,9 +42,11 @@ urlpatterns = [
     path('campañas/<int:pk_campaña>/<int:pk_analisis>/<int:pk_reporte>/', views.transcripcion, name='transcripcion'),
     url(r'^buscar/$', views.buscar, name='buscar'),
     path('reproducir/<str:audio>', views.reproducir, name='reproducir'),
-    path('graficos', views.graficos, name='graficos'),
+    path('graficos', views.graficoV1, name='graficoV1'),
     path('graficos/campañas', views.graficoCampañas, name='graficoCampañas'),
     path('graficos/agentes', views.graficoAgentes, name='graficoAgentes'),
+    #path('graficos/v1', views.graficoV1, name='graficoV1'),
+    path('test', views.graficoV1, name='graficoV1'),
 ]
 
 

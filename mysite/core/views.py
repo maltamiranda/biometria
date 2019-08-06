@@ -291,9 +291,10 @@ def campañas(request):
 	
 @group_required(('Auditor Campañas', '/accounts/login/'))
 def campañas_detalle(request, pk_campaña):
-	campaña = get_object_or_404(Campaña, pk=pk_campaña)
-	analisis = Analisis.objects.filter(fk_campaña=campaña)
-	return render(request, 'campaña_detalle.html', {'analisis':analisis,'campaña_nombre':campaña.nombre, 'campaña_id':campaña.id})
+    campaña = get_object_or_404(Campaña, pk=pk_campaña)
+    funciones = Funcion.objects.filter(estado=1)
+    funciones = funciones.difference(campaña.fk_funciones.all())
+    return render(request, 'campaña_funcion.html', {'campaña':campaña,'funciones':funciones})
 	
 @group_required(('Auditor Campañas', '/accounts/login/'))
 def configCampañaFunciones(request,pk_campaña):
@@ -501,3 +502,118 @@ def graficoAgentes(request):
 	return render(request, 'graficos/graficoAgentes.html',
 		{'agentesNombre':agentesNombre,
 		'agentesPromedio':agentesPromedio,'altura':altura})
+
+@group_required(('Auditor Graficos', '/accounts/login/'))
+def graficoV1(request):
+    context = {}
+    if request.method == 'POST':
+        camp = request.POST.get('campaña', 0)
+        agente = request.POST.get('agente', 0)
+        ponderacion = request.POST.get('ponderacion', 0)
+
+        if agente != 0:
+            if camp != 0 :
+                if ponderacion != 0:
+                    audios = Audio.objects.filter(agente=agente, campaña=camp, ponderacion__lt=ponderacion).order_by('ponderacion')
+                else:
+                    audios = Audio.objects.filter(agente=agente, campaña=camp).order_by('ponderacion')
+                audioNombres = []
+                audioPonderacion = []
+                for a in audios:
+                    audioNombres.append(a.idInteraccion)
+                    audioPonderacion.append(a.ponderacion)
+                context['labelsList'] = audioNombres
+                context['dataList'] = audioPonderacion
+                if len(audioNombres) * 24 < 300:
+                    context['altura'] = 300
+                else:
+                    context['altura'] = len(audioNombres) * 24
+
+                agenteNombre = Agente.objects.get(id=agente).nombre
+                campañaNombre = Campaña.objects.get(id=camp).nombre
+                context['texto'] = "'Audios de la campaña " + campañaNombre  + " del agente " + agenteNombre + "'"
+            else:
+                agente = Agente.objects.get(id=agente)
+                audios = Audio.objects.filter(agente=agente)
+                campañas = []
+                for a in audios:
+                    campañas.append(a.campaña.nombre)
+                campañas = list(dict.fromkeys(campañas))
+                data = []
+                for c in campañas:
+                    c = Campaña.objects.get(nombre=c)
+                    audios = Audio.objects.filter(campaña=c)
+                    count = 0
+                    sum = 0
+                    for a in audios:
+                        count += 1
+                        sum = sum + a.ponderacion
+                    data.append(sum/count)
+                if ponderacion != 0:
+                    sacar = []
+                    pos = 0
+                    for d in data:
+                        if data < ponderacion:
+                            sacar.append(pos)
+                        pos += 1
+                    for s in sacar:
+                        campañas.pop(s)
+                        data.pop(s)
+
+                context['labelsList'] = campañas
+                context['dataList'] = data
+                context['texto'] = "'Ponderacion promedio de las campañas del agente " + agente.nombre + "'"
+                if len(campañas) * 24 < 300:
+                    context['altura'] = 300
+                else:
+                    context['altura'] = len(campañas) * 24
+        elif camp != 0:
+            campañaNombre = Campaña.objects.get(id=camp).nombre
+            audios = Audio.objects.filter(campaña=camp).order_by('ponderacion')
+            agentes = []
+            for a in audios:
+                agentes.append(a.agente.nombre)
+            agentes = list(dict.fromkeys(agentes))
+            data = []
+            for ag in agentes:
+                ag = Agente.objects.get(nombre=ag)
+                audios = Audio.objects.filter(agente=ag)
+                count = 0
+                sum = 0
+                for a in audios:
+                    count += 1
+                    sum = sum + a.ponderacion
+                data.append(sum/count)
+            if ponderacion != 0:
+                sacar = []
+                pos = 0
+                for d in data:
+                    if data < ponderacion:
+                        sacar.append(pos)
+                    pos += 1
+                for s in sacar:
+                    agentes.pop(s)
+                    data.pop(s)
+            
+            context['labelsList'] = agentes
+            context['dataList'] = data
+            context['texto'] = "'Ponderacion promedio de los agentes en la campaña " + campañaNombre + "'"
+            if len(agentes) * 24 < 300:
+                context['altura'] = 300
+            else:
+                context['altura'] = len(agentes) * 24
+
+    
+    context['agentes'] = Agente.objects.all().order_by('nombre')
+    context['campañas'] = Campaña.objects.all().order_by('nombre')
+    #altura = len(agentesNombre) * 12
+    return render(request, 'graficos/grafico_V1.html',context)
+
+
+
+@group_required(('Auditor Campañas', '/accounts/login/'))
+def test(request, pk_campaña):
+    camp = Campaña.objects.get(pk=pk_campaña)
+    funciones = Funcion.objects.filter(estado=1)
+    funciones = funciones.difference(camp.fk_funciones.all())
+    return render(request, 'test.html',{'camp':camp,'funciones':funciones})

@@ -1,34 +1,92 @@
 {% extends "base.html" %}
 
+{% block javascript %}
+<script>
+    $(function () {
+        var rightMove = function () {
+            console.log("Anduvo el evento");
+            var selectedOpts = $('#lstBox1 option:selected');
+            if (selectedOpts.length == 0) {
+                alert("Nothing to move.");
+                //e.preventDefault();
+            }
+
+            $('#lstBox2').append($(selectedOpts).clone());
+            $(selectedOpts).remove();
+
+            /* -- Uncomment for optional sorting --
+            var box2Options = $('#lstBox2 option');
+            var box2OptionsSorted;
+            box2OptionsSorted = box2Options.toArray().sort(strDes);
+            $('#lstBox2').empty();
+            box2OptionsSorted.forEach(function(opt){
+              $('#lstBox2').append(opt);
+            })
+            */
+
+            //e.preventDefault();
+        }
+
+        $('#btnRight').click(rightMove);
+       });
+</script>
+{% endblock javascript%}
+
 {% block titulo %}
 Test
 {% endblock titulo %}
 
 {% block content %}
+<style>
+    .subject-info-box-1,
+        .subject-info-box-2 {
+            float: left;
+            width: 45%;
+            
+            select {
+                padding: 0;
 
-  <br>
-  <br>
+                option {
+                    padding: 4px 10px 4px 10px;
+                }
 
-  <div class="jumbotron">
-    <center>
-      <h1 class="mt-4">Prueba del Sistema</h1>
-    </center>
-    <hr class="my-4">
-    <center>
-    
-      <a type="button" href="{% url 'test' %}" class="small-box-footer bg-aqua my-2"><span class="mr-2 ml-2">.::Repetir::.</span>  </a>
+                option:hover {
+                    background: #EEEEEE;
+                }
+            }
+        }
 
-    </center>
-  </div>
+        .subject-info-arrows {
+            float: left;
+            width: 10%;
+        
+            input {
+                width: 70%;
+                margin-bottom: 5px;
+            }
+        }
+</style>
+<div class="subject-info-box-1">
+  <select multiple="multiple" id='lstBox1' class="form-control" style="height:230px;">
+    {% for selec in funciones %}
+        <option value="{{selec.id}}">{{selec.nombre}} - <i>{{selec.descripcion}}</i></option>
+    {% endfor %}
+  </select>
+</div>
 
-  
-  
+<div class="subject-info-arrows text-center">
+  <input type='button' id='btnAllRight' value='>>' class="btn btn-primary btn-sm btn-skip" style="width: 70%;"/><br><br>
+  <input type='button' id='btnRight' value='>' class="btn btn-primary btn-sm btn-skip" style="width: 70%;" /><br /><br>
+  <input type='button' id='btnLeft' value='<' class="btn btn-primary btn-sm btn-skip" style="width: 70%;" /><br /><br>
+  <input type='button' id='btnAllLeft' value='<<' class="btn btn-primary btn-sm btn-skip" style="width: 70%;" />
+</div>
 
+<div class="subject-info-box-2">
+  <select multiple="multiple" id='lstBox2' class="form-control" style="height:230px;">
+    {% for selec in camp.fk_funciones.all %}
+        <option value="{{selec.id}}">{{selec.nombre}} - <i>{{selec.descripcion}}</i></option>
+    {% endfor %}
+</div>
 
-
-  <script type='text/javascript' src='/static/js/p5.js'></script>
-  <script type='text/javascript' src='/static/js/p5.dom.js'></script>
-  <script type='text/javascript' src='/static/js/p5.sound.js'></script>
-  <script type='text/javascript' src='/static/js/p5.speech.js'></script>
-  <script type='text/javascript' src='/static/js/main.js'></script>
+<div class="clearfix"></div>
 {% endblock content %}

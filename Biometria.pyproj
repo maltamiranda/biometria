@@ -94,6 +94,7 @@
     <Content Include="mysite\templates\buscar.html" />
     <Content Include="mysite\templates\campaña_detalle.html" />
     <Content Include="mysite\templates\campaña_detalle_crear.html" />
+    <Content Include="mysite\templates\campaña_funcion.html" />
     <Content Include="mysite\templates\campaña_funcion_detalle.html" />
     <Content Include="mysite\templates\campaña_list.html" />
     <Content Include="mysite\templates\funciones.html" />
@@ -105,10 +106,12 @@
     <Content Include="mysite\templates\graficos.html" />
     <Content Include="mysite\templates\graficos\graficoAgentes.html" />
     <Content Include="mysite\templates\graficos\graficoCampañas.html" />
+    <Content Include="mysite\templates\graficos\grafico_V1.html" />
     <Content Include="mysite\templates\home.html" />
     <Content Include="mysite\templates\includes\campaña_parcial_tabla.html" />
     <Content Include="mysite\templates\includes\campaña_parcial_update.html" />
     <Content Include="mysite\templates\includes\campaña_parcial_update_ORIGINAL.html" />
+    <Content Include="mysite\templates\includes\campaña_parcial_update_v2.html" />
     <Content Include="mysite\templates\includes\comentarioReporte_parcial.html" />
     <Content Include="mysite\templates\includes\comentario_parcial.html" />
     <Content Include="mysite\templates\includes\detalleAnalisis_parcial.html" />

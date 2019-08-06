@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+{{campna}}
+{% endblock %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb my-4 bg-dark">
+		<li class="breadcrumb-item"><a href="{% url 'campañas' %}"><u>Campañas</u></a></li>
+		<li class="breadcrumb-item text-white">{{campaña.nombre}}</li>
+	</ol>
+{% endblock %}
+
+
+{% block javascript %}
+<script>
+    $(function () {
+
+        var rightAll = function () {
+            var selectedOpts = $('#lstBox1 option');
+            if (selectedOpts.length == 0) {
+                alert("Nothing to move.");
+                e.preventDefault();
+            }
+
+            $('#lstBox2').append($(selectedOpts).clone());
+            $(selectedOpts).remove();
+            e.preventDefault();
+        };
+
+        var right = function () {
+            var selectedOpts = $('#lstBox1 option:selected');
+            if (selectedOpts.length == 0) {
+                alert("Nothing to move.");
+                //e.preventDefault();
+            }
+
+            $('#lstBox2').append($(selectedOpts).clone());
+            $(selectedOpts).remove();
+
+            /* -- Uncomment for optional sorting --
+            var box2Options = $('#lstBox2 option');
+            var box2OptionsSorted;
+            box2OptionsSorted = box2Options.toArray().sort(strDes);
+            $('#lstBox2').empty();
+            box2OptionsSorted.forEach(function(opt){
+              $('#lstBox2').append(opt);
+            })
+            */
+
+            //e.preventDefault();
+        }
+
+        var = left = function () {
+            var selectedOpts = $('#lstBox2 option:selected');
+            if (selectedOpts.length == 0) {
+                alert("Nothing to move.");
+                e.preventDefault();
+            }
+
+            $('#lstBox1').append($(selectedOpts).clone());
+            $(selectedOpts).remove();
+            e.preventDefault();
+        };
+
+        var leftAll = function () {
+            var selectedOpts = $('#lstBox2 option');
+            if (selectedOpts.length == 0) {
+                alert("Nothing to move.");
+                e.preventDefault();
+            }
+
+            $('#lstBox1').append($(selectedOpts).clone());
+            $(selectedOpts).remove();
+            e.preventDefault();
+        });
+
+        $('#btnAllRight').click(rightAll);
+        $('#btnRight').click(right);
+        $('#btnLeft').click(left);
+        $('#btnAllLeft').click(leftAll);
+       });
+</script>
+{% endblock javascript%}
+
+{% block content %}
+<style>
+    .subject-info-box-1,
+        .subject-info-box-2 {
+            float: left;
+            width: 45%;
+            
+            select {
+                padding: 0;
+
+                option {
+                    padding: 4px 10px 4px 10px;
+                }
+
+                option:hover {
+                    background: #EEEEEE;
+                }
+            }
+        }
+
+        .subject-info-arrows {
+            float: left;
+            width: 10%;
+        
+            input {
+                width: 70%;
+                margin-bottom: 5px;
+            }
+        }
+</style>
+
+<div>
+    <button type='button' class='btn btn-primary btn-sm btn-skip' onclick="location.href='{% url 'campana' %}';" style="width:99px;">Salir</button>
+    <br>
+    <br>
+</div>
+
+<div class="subject-info-box-1">
+  <select multiple="multiple" id='lstBox1' class="form-control" style="height:230px;">
+    {% for selec in funciones %}
+        <option value="{{selec.id}}">{{selec.nombre}} - <i>{{selec.descripcion}}</i></option>
+    {% endfor %}
+  </select>
+</div>
+
+<div class="subject-info-arrows text-center">
+  <input type='button' id='btnAllRight' value='>>' class="btn btn-primary btn-sm btn-skip" style="width: 70%;"/><br><br>
+  <input type='button' id='btnRight' value='>' class="btn btn-primary btn-sm btn-skip" style="width: 70%;" /><br /><br>
+  <input type='button' id='btnLeft' value='<' class="btn btn-primary btn-sm btn-skip" style="width: 70%;" /><br /><br>
+  <input type='button' id='btnAllLeft' value='<<' class="btn btn-primary btn-sm btn-skip" style="width: 70%;" />
+</div>
+
+<div class="subject-info-box-2">
+  <select multiple="multiple" id='lstBox2' class="form-control" style="height:230px;">
+    {% for selec in camp.fk_funciones.all %}
+        <option value="{{selec.id}}">{{selec.nombre}} - <i>{{selec.descripcion}}</i></option>
+    {% endfor %}
+</div>
+
+<div class="clearfix"></div>
+{% endblock %}

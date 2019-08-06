@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}
+Grafico Campañas/Agentes
+{% endblock titulo %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb my-4 bg-dark">
+		<li class="breadcrumb-item text-white">Graficos</li>
+	</ol>
+{% endblock %}
+
+
+{% block javascript %}
+
+{% endblock javascript %}
+
+{% block content %}
+	<script src="{% static  '/js/utils.js' %}"></script>
+	<script src="{% static  '/js/chart.min.js' %}"></script>
+	<style>
+	    canvas{
+	    	-moz-user-select: none;
+	    	-webkit-user-select: none;
+	    	-ms-user-select: none;
+	    }
+	</style>
+	<h1>Grafico Campañas/Agentes</h1>
+    
+    <form method="post">
+        <div>
+        {% csrf_token %}
+        <button type='submit' class='btn btn-primary btn-sm btn-start text-center' style="width:99px;">Buscar</button>
+        <button type='button' class='btn btn-primary btn-sm btn-skip' onclick="location.href='{% url 'home' %}';" style="width:99px;">Salir</button>
+            <br>
+        <br>
+        <div style="width:50%;float:left;">
+            <h5>Agentes</h5>
+            <select multiple="multiple" name="agente" style="width:85%;height:200px">
+		        {% for agente in agentes %}
+		        	<option value="{{agente.id}}">{{agente.nombre}}</option>
+		        {% endfor %}
+	        </select>
+        </div>
+        <div style="width:50%;float:left;">
+            <h5>Campañas</h5>
+            <select multiple="multiple" name="campaña" style="width:85%;height:200px">
+		        {% for campaña in campañas %}
+		        	<option value="{{campaña.id}}">{{campaña.nombre}}</option>
+		        {% endfor %}
+	        </select>
+        </div>
+            <br>
+            Ponderacion 
+            <input type="number" name="ponderacion" max="100" min="1" class="form-control" style="width:25%;">
+        </div>
+    </form>
+    <br>
+
+
+
+	<div style="height: {{altura}}px">
+		<canvas id="canvas"></canvas>
+	</div>
+	<br>
+	<br>
+	<script>
+		var MONTHS = ['February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+		var color = Chart.helpers.color;
+		var horizontalBarChartData = {
+			labels: {{labelsList|safe}},
+			datasets: [{
+				label: '{{labelName}}',
+				backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+				borderColor: window.chartColors.red,
+				borderWidth: 1,
+				data: {{dataList|safe}},
+			} ]
+
+		};
+
+		window.onload = function() {
+			var ctx = document.getElementById('canvas').getContext('2d');
+			window.myHorizontalBar = new Chart(ctx, {
+				type: 'horizontalBar',
+				data: horizontalBarChartData,
+				options: {
+					// Elements options apply to all of the options unless overridden in a dataset
+					// In this case, we are setting the border of each horizontal bar to be 2px wide
+					maintainAspectRatio: false,
+					responsive: true,
+					elements: {
+						rectangle: {
+							borderWidth: 2,
+						}
+					},
+					legend: {
+						position: 'right',
+					},
+					title: {
+						display: true,
+						text: {{texto|safe}}
+					}
+				}
+			});
+
+		};
+
+		document.getElementById('randomizeData').addEventListener('click', function() {
+			var zero = Math.random() < 0.2 ? true : false;
+			horizontalBarChartData.datasets.forEach(function(dataset) {
+				dataset.data = dataset.data.map(function() {
+					return zero ? 0.0 : randomScalingFactor();
+				});
+
+			});
+			window.myHorizontalBar.update();
+		});
+
+		var colorNames = Object.keys(window.chartColors);
+
+		document.getElementById('addDataset').addEventListener('click', function() {
+			var colorName = colorNames[horizontalBarChartData.datasets.length % colorNames.length];
+			var dsColor = window.chartColors[colorName];
+			var newDataset = {
+				label: 'Dataset ' + (horizontalBarChartData.datasets.length + 1),
+				backgroundColor: color(dsColor).alpha(0.5).rgbString(),
+				borderColor: dsColor,
+				data: []
+			};
+
+			for (var index = 0; index < horizontalBarChartData.labels.length; ++index) {
+				newDataset.data.push(randomScalingFactor());
+			}
+
+			horizontalBarChartData.datasets.push(newDataset);
+			window.myHorizontalBar.update();
+		});
+
+		document.getElementById('addData').addEventListener('click', function() {
+			if (horizontalBarChartData.datasets.length > 0) {
+				var month = MONTHS[horizontalBarChartData.labels.length % MONTHS.length];
+				horizontalBarChartData.labels.push(month);
+
+				for (var index = 0; index < horizontalBarChartData.datasets.length; ++index) {
+					horizontalBarChartData.datasets[index].data.push(randomScalingFactor());
+				}
+
+				window.myHorizontalBar.update();
+			}
+		});
+
+		document.getElementById('removeDataset').addEventListener('click', function() {
+			horizontalBarChartData.datasets.pop();
+			window.myHorizontalBar.update();
+		});
+
+		document.getElementById('removeData').addEventListener('click', function() {
+			horizontalBarChartData.labels.splice(-1, 1); // remove the label first
+
+			horizontalBarChartData.datasets.forEach(function(dataset) {
+				dataset.data.pop();
+			});
+
+			window.myHorizontalBar.update();
+		});
+	</script>
+{% endblock content %}

@@ -104,10 +104,7 @@ Campañas
                     </ul>
 				</td>
 				<td>
-					<button type="button" class="btn btn-info btn-sm js-configurarFunciones" data-url='/ajax/configCampañaFunciones/{{campaña.id}}'>
-						<span class="glyphicon glyphicon-plus"></span>
-						Configurar
-					</button>
+					<button type='button' class='btn btn-primary btn-sm btn-skip' onclick="location.href='{{campaña.id}}';" style="width:99px;">Configurar</button>
 				</td>
 			</tr>
 			{% endfor %}
