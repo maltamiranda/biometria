@@ -73,7 +73,7 @@ class Command(BaseCommand):
             a.save()
 
     def handle(self, *args, **options):
-        #self._cargarAudios()
-        #self._cargarTranscripciones()
-        #self._cargarReportes()
+        self._cargarAudios()
+        self._cargarTranscripciones()
+        self._cargarReportes()
         self._cargarPonderacionAudio()

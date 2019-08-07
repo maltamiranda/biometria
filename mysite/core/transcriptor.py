@@ -26,7 +26,6 @@ class Transcriptor(object):
         rate = File.rate
 
         chn = File.data.shape[1]
-        print (rate)
 
         #pdb.set_trace()
 
@@ -109,7 +108,5 @@ class Transcriptor(object):
             count = count + 1
 
             remove(file)
-
-        print('mark')
 
         return (canal1, canal2)

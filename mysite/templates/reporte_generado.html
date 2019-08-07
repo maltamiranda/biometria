@@ -23,15 +23,27 @@ Transcripcion
 	    <table class="table mb-0 table-bordered">
 		    <thead>
 			    <tr>
+                    <th>Duracion(seg)</th>
 				    <th style="width: 50%">Canal 1 / Operador</th>
 				    <th style="width: 50%">Canal 2 / Cliente</th>
 			    </tr>
 		    </thead>
 		    <tbody>
-			    <tr>
-			    	<td>{{reporte.canal_1|safe}}</td>
-			    	<td>{{reporte.canal_2}}</td>
-			    </tr>
+			    {% if trans %}
+                    {% for i in trans %}
+			            <tr>
+                            <td style="text-align: center;vertical-align: middle;">{{i.0}}</td>
+			        	    <td>{{i.1|safe}}</td>
+			        	    <td>{{i.2}}</td>
+			            </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td>N/A</td>
+			        	<td>{{reporte.canal_1|safe}}</td>
+			        	<td>{{reporte.canal_2}}</td>
+			        </tr>
+                {% endif %}
 		    </tbody>
 	    </table>
     </div>

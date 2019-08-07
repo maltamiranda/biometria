@@ -46,7 +46,7 @@ urlpatterns = [
     path('graficos/campañas', views.graficoCampañas, name='graficoCampañas'),
     path('graficos/agentes', views.graficoAgentes, name='graficoAgentes'),
     #path('graficos/v1', views.graficoV1, name='graficoV1'),
-    path('test', views.graficoV1, name='graficoV1'),
+    #path('test', views.graficoV1, name='graficoV1'),
 ]
 
 

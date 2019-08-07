@@ -20,15 +20,19 @@ Transcripcion
 	<table class="table mb-0">
 		<thead>
 			<tr>
-				<th style="width: 50%">Canal 1 / Operador</th>
-				<th style="width: 50%">Canal 2 / Cliente</th>
+                <th>Duracion</th>
+				<th style="width: 45%">Canal 1 / Operador</th>
+				<th style="width: 45%">Canal 2 / Cliente</th>
 			</tr>
 		</thead>
 		<tbody>
-			<tr>
-				<td>{{reporte.canal_1|safe}}</td>
-				<td>{{reporte.canal_2}}</td>
-			</tr>
+            {% for i in reporte %}
+			    <tr>
+                    <td>{{i.0}}</td>
+			    	<td>{{i.1|safe}}</td>
+			    	<td>{{i.2}}</td>
+			    </tr>
+            {% endfor %}
 		</tbody>
 	</table>
 	<button type='button' class='btn btn-primary btn-large btn-skip text-right' onclick="window.history.back()">Cancelar</button>

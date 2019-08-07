@@ -19,7 +19,7 @@
         var rightAll = function () {
             var selectedOpts = $('#lstBox1 option');
             if (selectedOpts.length == 0) {
-                alert("Nothing to move.");
+                alert("No hay funciones para mover.");
                 //e.preventDefault();
             }
 
@@ -31,7 +31,7 @@
         var right = function () {
             var selectedOpts = $('#lstBox1 option:selected');
             if (selectedOpts.length == 0) {
-                alert("Nothing to move.");
+                alert("Seleccione una funcion.");
                 //e.preventDefault();
             }
 
@@ -54,7 +54,7 @@
         var left = function () {
             var selectedOpts = $('#lstBox2 option:selected');
             if (selectedOpts.length == 0) {
-                alert("Nothing to move.");
+                alert("Seleccione una funcion.");
                 //e.preventDefault();
             }
 
@@ -66,7 +66,7 @@
         var leftAll = function () {
             var selectedOpts = $('#lstBox2 option');
             if (selectedOpts.length == 0) {
-                alert("Nothing to move.");
+                alert("No hay funciones para mover.");
                 //e.preventDefault();
             }
 
@@ -79,6 +79,12 @@
         $('#btnRight').click(right);
         $('#btnLeft').click(left);
         $('#btnAllLeft').click(leftAll);
+
+        $('#form').submit(function() {
+            $('#lstBox2 option').prop('selected', true);
+            return true; // return false to cancel form action
+        });
+
        });
 </script>
 {% endblock javascript%}
@@ -113,7 +119,7 @@
             }
         }
 </style>
-<form method="post">
+<form method="post" id="form">
 	{% csrf_token %}
 	<div>
 		<button type='submit' class='btn btn-primary btn-sm btn-start text-center' style="width:99px;">Guardar</button>
@@ -138,7 +144,7 @@
 	</div>
 	
 	<div class="subject-info-box-2">
-	<select multiple="multiple" id='lstBox2' class="form-control" style="height:230px;">
+	<select multiple="multiple" id='lstBox2' class="form-control" style="height:230px;" name="funciones">
 		{% for selec in campaña.fk_funciones.all %}
 			<option value="{{selec.id}}">{{selec.nombre}} - <i>{{selec.descripcion}}</i></option>
 		{% endfor %}

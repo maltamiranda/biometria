@@ -6,7 +6,7 @@ class Evaluador(object):
 
 	def normalizar(self, lista):
 
-		cadena = ' '.join(lista)
+		cadena = '|'.join(lista)
 
 		cadena = cadena.lower()
 
@@ -22,7 +22,8 @@ class Evaluador(object):
 		return cadena
 
 	def calificar(self, cadena, dict_valor, frase):
-
+		
+		cadena = cadena.replace("|"," ")
 		suma = 0
 		cadena = cadena.split(' ')
 		
@@ -48,6 +49,7 @@ class Evaluador(object):
 		
 	def ponderizar(self, canal1, palabras):
 	
+		cadena = canal1.replace("|"," ")
 		suma = 0
 		canal1_temp = set(canal1.split(" "))
 		for p in palabras:

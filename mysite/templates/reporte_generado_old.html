@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Transcripcion
+{% endblock titulo %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb my-4 bg-dark">
+		<li class="breadcrumb-item"><a href="{% url 'reportes' %}"><u>Reportes</u></a></li>
+		<li class="breadcrumb-item text-white">{{reporte.fk_audio.idInteraccion}}</li>
+	</ol>
+{% endblock %}
+
+{% block content %}
+    <a href="{% url 'reportes' %}" class="btn btn-primary">Salir</a>
+	<hr>
+    <div>
+		{% include 'includes/reporte_parcial_detalle.html' %}
+	</div>
+    <div>
+        <hr>
+        <h3>Transcripcion</h3>
+	    <table class="table mb-0 table-bordered">
+		    <thead>
+			    <tr>
+				    <th style="width: 50%">Canal 1 / Operador</th>
+				    <th style="width: 50%">Canal 2 / Cliente</th>
+			    </tr>
+		    </thead>
+		    <tbody>
+			    <tr>
+			    	<td>{{reporte.canal_1|safe}}</td>
+			    	<td>{{reporte.canal_2}}</td>
+			    </tr>
+		    </tbody>
+	    </table>
+    </div>
+{% endblock content %}

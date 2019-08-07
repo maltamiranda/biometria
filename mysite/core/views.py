@@ -132,9 +132,24 @@ def reporte_generado(request, pk_reporte):
     audio = Audio.objects.get(pk=reporte.fk_audio.pk)
     campaña =get_object_or_404(Campaña, pk=audio.campaña.pk)
     palabras = Palabras.objects.filter(fk_funcion=reporte.fk_funcion)
+
+    #Generar tabla con el texto trascripto
+    contador = 0
+    trans = []
+    c1 = reporte.canal_1.split("|")
+    c2 = reporte.canal_2.split("|")
+
+    if len(c1) == len(c2):
+        for i in range(len(c1)):
+            trans.append([str(contador) + "-" + str(contador+30),
+                            c1[i],
+                            c2[i]])
+            contador += 30
+
     return render(request, 'reporte_generado.html', {'reporte':reporte,
 													'campaña':campaña,
-													'palabras':palabras})
+													'palabras':palabras,
+                                                    'trans':trans})
 
 @group_required(('Auditor Funciones', '/accounts/login/'))
 def funciones_list(request):
@@ -292,6 +307,17 @@ def campañas(request):
 @group_required(('Auditor Campañas', '/accounts/login/'))
 def campañas_detalle(request, pk_campaña):
     campaña = get_object_or_404(Campaña, pk=pk_campaña)
+    if request.method == 'POST':
+        campaña.fk_funciones.clear()
+        funciones = request.POST.getlist('funciones')
+        for f in funciones:
+            func = Funcion.objects.get(id=f)
+            campaña.fk_funciones.add(func)
+            campaña.save()
+        print (campaña.fk_funciones)
+        return redirect('campañas')
+        
+    print (campaña.fk_funciones)
     funciones = Funcion.objects.filter(estado=1)
     funciones = funciones.difference(campaña.fk_funciones.all())
     return render(request, 'campaña_funcion.html', {'campaña':campaña,'funciones':funciones})
@@ -391,14 +417,25 @@ def analisis_borrar(request, pk_campaña, pk_analisis):
 
 @group_required(('Auditor Campañas', '/accounts/login/'))
 def transcripcion(request, pk_campaña, pk_analisis, pk_reporte):
-	reporte = Reporte.objects.get(pk=pk_reporte)
-	campaña =get_object_or_404(Campaña, pk=pk_campaña)
-	analisis = get_object_or_404(Analisis, pk=pk_analisis)
-	palabras = Palabras.objects.filter(fk_funcion=reporte.fk_funcion)
-	#funcion = get_object_or_404(Funcion, pk=reporte.fk_funcion.pk)
-	#c1 = audio.canal_1
-	#for palabra in Palabras.objects.filter(fk_funcion=)
-	return render(request, 'transcripcion.html', {'reporte':reporte,
+    reporte = Reporte.objects.get(pk=pk_reporte)
+    campaña =get_object_or_404(Campaña, pk=pk_campaña)
+    analisis = get_object_or_404(Analisis, pk=pk_analisis)
+    palabras = Palabras.objects.filter(fk_funcion=reporte.fk_funcion)
+    
+    #Generar tabla con el texto trascripto
+    contador = 0
+    c1 = reporte.canal_1.split("|")
+    c2 = reporte.canal_2.split("|")
+
+    if len(c1) == len(c2):
+        reporte = []
+        for i in range(len(c1)):
+            reporte.append([contador + "-" + str(contador+30),
+                            c1[i],
+                            c2[i]])
+            contador += 30
+
+    return render(request, 'transcripcion.html', {'reporte':reporte,
 													'analisis':analisis,
 													'campaña':campaña,
 													'palabras':palabras})
@@ -510,6 +547,10 @@ def graficoV1(request):
         camp = request.POST.get('campaña', 0)
         agente = request.POST.get('agente', 0)
         ponderacion = request.POST.get('ponderacion', 0)
+        try:
+            ponderacion = int(ponderacion)
+        except:
+            ponderacion = 0
 
         if agente != 0:
             if camp != 0 :
@@ -553,7 +594,7 @@ def graficoV1(request):
                     sacar = []
                     pos = 0
                     for d in data:
-                        if data < ponderacion:
+                        if d < int(ponderacion):
                             sacar.append(pos)
                         pos += 1
                     for s in sacar:
@@ -588,7 +629,7 @@ def graficoV1(request):
                 sacar = []
                 pos = 0
                 for d in data:
-                    if data < ponderacion:
+                    if d < int(ponderacion):
                         sacar.append(pos)
                     pos += 1
                 for s in sacar:
