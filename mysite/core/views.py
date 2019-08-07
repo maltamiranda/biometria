@@ -314,10 +314,8 @@ def campañas_detalle(request, pk_campaña):
             func = Funcion.objects.get(id=f)
             campaña.fk_funciones.add(func)
             campaña.save()
-        print (campaña.fk_funciones)
         return redirect('campañas')
         
-    print (campaña.fk_funciones)
     funciones = Funcion.objects.filter(estado=1)
     funciones = funciones.difference(campaña.fk_funciones.all())
     return render(request, 'campaña_funcion.html', {'campaña':campaña,'funciones':funciones})
