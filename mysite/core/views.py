@@ -5,7 +5,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
+
+import os
 
 from .filters import ReporteFilter
 
@@ -439,9 +441,17 @@ def transcripcion(request, pk_campaña, pk_analisis, pk_reporte):
 													'palabras':palabras})
 	
 	
-def reproducir(request, audio):
-	audio = get_object_or_404(Audio,idInteraccion=audio)
-	return render(request,'reproducir.html',{'audio':audio})
+	
+def reproducir(request, pk_audio):
+	original = "M:\\FreeLance\\Audios\\190810\\"
+	pathTMP = "M:\\FreeLance\\Biometria\\static\\media\\audios\\tmp\\"
+	audio = get_object_or_404(Audio,pk=pk_audio)
+	filename = audio.file.path.split("\\")[-1]
+	convertir = "M:\\FreeLance\\ffmpeg.exe   -acodec g729 -i " + original + filename + " -acodec pcm_s16le -y -f wav " + pathTMP + filename
+	os.system(convertir)
+	#return redirect('reproducir.html', audio.file.path)
+	#return render(request,'reproducir.html',{'audio':audio})
+	return HttpResponseRedirect('/media/audios/tmp/' + filename)
 	
 def cambiarEstado(request, pk_funcion):
 	data = dict()

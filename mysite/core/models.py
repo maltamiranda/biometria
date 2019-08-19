@@ -5,12 +5,14 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class Campaña(models.Model):
 	nombre = models.CharField(max_length=80, unique=True)
 	fk_funciones = models.ManyToManyField('Funcion',limit_choices_to = {'estado': 1})
+	idMitrol = models.IntegerField(default=0)
 	
 	def __str__(self):
 		return self.nombre
 	
 class Agente(models.Model):
 	nombre = models.CharField(max_length=60, unique=True, default="")
+	idMitrol = models.IntegerField(default=0)
 
 	def __str__(self):
 		return self.nombre
@@ -19,12 +21,14 @@ class Audio(models.Model):
 	file = models.FileField(upload_to='audios/files/',default=None)
 	inicio = models.DateTimeField(default=None)
 	idInteraccion = models.CharField(max_length=60,default=None, unique=True)
-	agente = models.ForeignKey(Agente, related_name='agente', on_delete=models.CASCADE,default=None)
-	campaña = models.ForeignKey(Campaña, related_name='campaña_audio', on_delete=models.CASCADE,default=None)
+	agente = models.ForeignKey(Agente, related_name='agente', on_delete=models.CASCADE,default=None,blank=True,null=True)
+	campaña = models.ForeignKey(Campaña, related_name='campaña_audio', on_delete=models.CASCADE,default=None,blank=True,null=True)
 	canal_1 = models.TextField(max_length=10000, default="")
 	canal_2 = models.TextField(max_length=10000, default="")
 	comentario = models.TextField(max_length=10000, default="")
 	ponderacion = models.FloatField(default=0)
+	procesado = models.BooleanField(default=False)
+	fileOriginal = models.CharField(max_length=255,default="")
 
 	
 	def __str__(self):

@@ -31,7 +31,7 @@ urlpatterns = [
     path('reportes/<int:pk_reporte>/', views.reporte_generado, name='reporte_generado'),
     #path('reportes/', views.buscar, name='buscar'),
     path('reportes/', views.reportes, name='reportes'),
-	path('reportes/play/<int:pk>/', views.reproducir, name='reproducir'),
+	path('reportes/play/<int:pk_audio>/', views.reproducir, name='reproducir'),
     #path('singup/', views.singup, name='singup'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('campañas/', views.campañas, name='campañas'),
