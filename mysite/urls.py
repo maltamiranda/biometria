@@ -23,6 +23,7 @@ urlpatterns = [
     path('ajax/cargar_funcion_descripcion/', views.cargar_funcion_descripcion, name='cargar_funcion_descripcion'),
     path('ajax/configCampañaFunciones/<int:pk_campaña>', views.configCampañaFunciones, name='configCampañaFunciones'),
     path('ajax/borrar_funcion/<int:pk_funcion>', views.borrar_funcion, name='borrar_funcion'),
+    path('ajax/analizarAudio/<int:pk_audio>', views.analizarAudio, name='analizarAudio'),
     #path('audios/analizar/<int:pk>/', views.analizar, name='analizar'),
     #path('test/', views.test, name='test'),
     #path('audios/', views.audio_list, name='audio_list'),

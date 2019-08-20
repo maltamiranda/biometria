@@ -22,10 +22,10 @@ Inicio
             		"url": "{% static '/json/Spanish.json' %}"
         		}
     		} );
-			console.log($("#idPondMenor").find("label[for=id_ponderacion__lt]").text("Ponderacion menor que:"));
-			console.log($("#idPondMayor").find("label[for=id_ponderacion__gt]").text("Ponderacion mayor que:"));
-			console.log($("#idCampaña").find("label[for=id_campaña__nombre__icontains]").text("Campaña contiene:"));
-			console.log($("#idAgente").find("label[for=id_agente__nombre__icontains]").text("Agente contiene:"));
+			$("#idPondMenor").find("label[for=id_ponderacion__lt]").text("Ponderacion menor que:");
+			$("#idPondMayor").find("label[for=id_ponderacion__gt]").text("Ponderacion mayor que:");
+			$("#idCampaña").find("label[for=id_campaña__nombre__icontains]").text("Campaña contiene:");
+			$("#idAgente").find("label[for=id_agente__nombre__icontains]").text("Agente contiene:");
 
 		});
 		
@@ -63,6 +63,23 @@ Inicio
 			});
 			return false
 		}
+		
+		var analizar = function () {
+			var btn = $(this);
+			console.log("cargo el loadForm")
+			$.ajax({
+				url: btn.attr("data-url"),
+				type: 'get',
+				dataType: 'json',
+				success: function (data) {
+					if (data.analisis) {
+						console.log("Se actualizo  la campaña");
+					} else {
+						console.log("Error al actualizar la campaña");
+					}
+				}
+			});
+		}
 
 		$('.expandir').click(function() {
 			var $elemento = $(this);
@@ -87,6 +104,7 @@ Inicio
 
 
 		$(".js-comentario").click(loadForm);
+		$(".js-ejecutar").click(analizar);
 		$("#modal-comentario").on("submit", ".js-comentario-update-form", saveForm);
 
 
@@ -139,6 +157,7 @@ Inicio
 				<th>Ponderacion</th>
 				<th>Comentarios</th>
 				<th>Reproducir</th>
+				<th>Ejecutar</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -146,7 +165,7 @@ Inicio
 			<tr>
 				<td>{{audio.campaña.nombre}}</td>
 				<td class="expandir" id='id_audio'>{{audio.idInteraccion}}</td>
-				<td>{{audio.inicio}}</td>
+				<td>{{audio.inicio|date:'d/m/y H:i'}}</td>
 				<td>{{audio.agente.nombre}}</td>
 				<td style="text-align:center">{{audio.ponderacion|floatformat:2}} %</td>
 				<td>
@@ -157,6 +176,13 @@ Inicio
 					</button>
 				</td>
 				<td><a href="play/{{audio.id}}" class="btn btn-success btn-sm" target="_blank"><i class="fa fa-play"></i> Reproducir</a></td>
+				<td>
+					<button type="button"
+						class="btn btn-warning btn-sm js-ejecutar"
+						data-url="/ajax/analizarAudio/{{audio.id}}">
+						<span class="glyphicon glyphicon-trash"></span>Ejecutar
+					</button>
+				</td>
 			</tr>
 			{% empty %}
 			<tr>

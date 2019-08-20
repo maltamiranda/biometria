@@ -145,7 +145,7 @@
 	</div>
 	
 	<div class="subject-info-box-2">
-	<h4>Funciones ne campaña</h4>
+	<h4>Funciones en campaña</h4>
 	<select multiple="multiple" id='lstBox2' class="form-control" style="height:230px;" name="funciones">
 		{% for selec in campaña.fk_funciones.all %}
 			<option value="{{selec.id}}">{{selec.nombre}} - <i>{{selec.descripcion}}</i></option>

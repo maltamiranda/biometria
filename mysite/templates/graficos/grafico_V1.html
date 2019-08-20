@@ -38,7 +38,10 @@ Grafico Campañas/Agentes
         <div style="width:50%;float:left;">
             <h5>Agentes</h5>
             <select multiple="multiple" name="agente" style="width:85%;height:200px">
-		        {% for agente in agentes %}
+		        {% for agent in agenteSeleccionado %}
+		        	<option value="{{agent.id}}" selected="selected">{{agent.nombre}}</option>
+		        {% endfor %}
+				{% for agente in agentes %}
 		        	<option value="{{agente.id}}">{{agente.nombre}}</option>
 		        {% endfor %}
 	        </select>
@@ -46,7 +49,10 @@ Grafico Campañas/Agentes
         <div style="width:50%;float:left;">
             <h5>Campañas</h5>
             <select multiple="multiple" name="campaña" style="width:85%;height:200px">
-		        {% for campaña in campañas %}
+		        {% for camp in campañaSeleccionada %}
+		        	<option value="{{camp.id}}" selected="selected">{{camp.nombre}}</option>
+		        {% endfor %}
+				{% for campaña in campañas %}
 		        	<option value="{{campaña.id}}">{{campaña.nombre}}</option>
 		        {% endfor %}
 	        </select>

@@ -15,28 +15,31 @@ class Command(BaseCommand):
     def _cargarReportes(self):
         audios = Audio.objects.all()
         for a in audios:
-            funciones = a.campaña.fk_funciones.all()
-            for f in funciones:
-                e = Evaluador()
-                suma = e.ponderizar(a.canal_1.lower(), Palabras.objects.filter(fk_funcion=f))
-                canal_1_resaltado= a.canal_1
-                canal_1_resaltado = canal_1_resaltado.split(" ")
-                for palabra in Palabras.objects.filter(fk_funcion=f):
-                    if palabra.palabra.lower() in canal_1_resaltado:
-                        for indice,palabra_Canal_1 in enumerate(canal_1_resaltado):
-                            if palabra.palabra.lower() == palabra_Canal_1:
-                                canal_1_resaltado[indice] = palabra_Canal_1.replace(palabra.palabra.lower(),'<b>'+palabra.palabra.lower()+'</b>')
-                canal_1_resaltado = " ".join(canal_1_resaltado)
-                #analisis = random.randint(0, 100)
-                Reporte.objects.create(ponderacion=suma, 
-                                    fk_audio=a,
-                                    fk_funcion=f,
-                                    canal_1=canal_1_resaltado,
-                                    canal_2=a.canal_2,
-                                    nombre_agente = a.agente.nombre,
-                                    nombre_audio = a.idInteraccion,
-                                    nombre_campaña = a.campaña.nombre,
-                                    fecha_audio = a.inicio)
+            try:
+                funciones = a.campaña.fk_funciones.all()
+                for f in funciones:
+                    e = Evaluador()
+                    suma = e.ponderizar(a.canal_1.lower(), Palabras.objects.filter(fk_funcion=f))
+                    canal_1_resaltado= a.canal_1
+                    canal_1_resaltado = canal_1_resaltado.split(" ")
+                    for palabra in Palabras.objects.filter(fk_funcion=f):
+                        if palabra.palabra.lower() in canal_1_resaltado:
+                            for indice,palabra_Canal_1 in enumerate(canal_1_resaltado):
+                                if palabra.palabra.lower() == palabra_Canal_1:
+                                    canal_1_resaltado[indice] = palabra_Canal_1.replace(palabra.palabra.lower(),'<b>'+palabra.palabra.lower()+'</b>')
+                    canal_1_resaltado = " ".join(canal_1_resaltado)
+                    #analisis = random.randint(0, 100)
+                    Reporte.objects.create(ponderacion=suma, 
+                                        fk_audio=a,
+                                        fk_funcion=f,
+                                        canal_1=canal_1_resaltado,
+                                        canal_2=a.canal_2,
+                                        nombre_agente = a.agente.nombre,
+                                        nombre_audio = a.idInteraccion,
+                                        nombre_campaña = a.campaña.nombre,
+                                        fecha_audio = a.inicio)
+            except:
+                    pass
 
 
     def _cargarTranscripciones(self):
@@ -69,11 +72,12 @@ class Command(BaseCommand):
             for r in Reporte.objects.filter(fk_audio=a):
                 pond = pond + r.ponderacion
                 cant += 1
-            a.ponderacion = pond/cant
+            if cant != 0:
+                a.ponderacion = pond/cant
             a.save()
 
     def handle(self, *args, **options):
-        self._cargarAudios()
-        self._cargarTranscripciones()
+        #self._cargarAudios()
+        #self._cargarTranscripciones()
         self._cargarReportes()
         self._cargarPonderacionAudio()

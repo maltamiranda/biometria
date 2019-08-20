@@ -445,8 +445,8 @@ def transcripcion(request, pk_campaña, pk_analisis, pk_reporte):
 def reproducir(request, pk_audio):
 	pathTMP = "static/media/audios/tmp/"
 	audio = get_object_or_404(Audio,pk=pk_audio)
-	filename = audio.file.path.split("\\")[-1]
-	original = "/mnt/mitrol/"+audio.file.path.split("\\")[-2]
+	filename = audio.file.path.split("/")[-1]
+	original = "/mnt/mitrol/"+audio.idInteraccion[:6]+"/"
 	convertir = "ffmpeg  -acodec g729 -i " + original + filename + " -acodec pcm_s16le -y -f wav " + pathTMP + filename
 	os.system(convertir)
 	#return redirect('reproducir.html', audio.file.path)
@@ -561,6 +561,7 @@ def graficoV1(request):
             ponderacion = 0
 
         if agente != 0:
+            #Si tiene agente y campaña
             if camp != 0 :
                 if ponderacion != 0:
                     audios = Audio.objects.filter(agente=agente, campaña=camp, ponderacion__lt=ponderacion).order_by('ponderacion')
@@ -578,9 +579,13 @@ def graficoV1(request):
                 else:
                     context['altura'] = len(audioNombres) * 24
 
+                
+                context['agenteSeleccionado'] = Agente.objects.filter(id=agente)
+                context['campañaSeleccionada'] = Campaña.objects.filter(id=camp)
                 agenteNombre = Agente.objects.get(id=agente).nombre
                 campañaNombre = Campaña.objects.get(id=camp).nombre
                 context['texto'] = "'Audios de la campaña " + campañaNombre  + " del agente " + agenteNombre + "'"
+            #Si tiene solo agente
             else:
                 agente = Agente.objects.get(id=agente)
                 audios = Audio.objects.filter(agente=agente)
@@ -609,6 +614,8 @@ def graficoV1(request):
                         campañas.pop(s)
                         data.pop(s)
 
+                #agenteSeleccionado = Agente.objects.get(id=agente)
+                context['agenteSeleccionado'] = Agente.objects.filter(id=agente.id)
                 context['labelsList'] = campañas
                 context['dataList'] = data
                 context['texto'] = "'Ponderacion promedio de las campañas del agente " + agente.nombre + "'"
@@ -616,6 +623,7 @@ def graficoV1(request):
                     context['altura'] = 300
                 else:
                     context['altura'] = len(campañas) * 24
+        #Solo campaña
         elif camp != 0:
             campañaNombre = Campaña.objects.get(id=camp).nombre
             audios = Audio.objects.filter(campaña=camp).order_by('ponderacion')
@@ -644,6 +652,7 @@ def graficoV1(request):
                     agentes.pop(s)
                     data.pop(s)
             
+            context['campañaSeleccionada'] = Campaña.objects.filter(id=camp)
             context['labelsList'] = agentes
             context['dataList'] = data
             context['texto'] = "'Ponderacion promedio de los agentes en la campaña " + campañaNombre + "'"
@@ -652,9 +661,14 @@ def graficoV1(request):
             else:
                 context['altura'] = len(agentes) * 24
 
-    
-    context['agentes'] = Agente.objects.all().order_by('nombre')
-    context['campañas'] = Campaña.objects.all().order_by('nombre')
+    if context.get('agenteSeleccionado'):
+        context['agentes'] = Agente.objects.all().difference(context['agenteSeleccionado']).order_by('nombre')
+    else:
+        context['agentes'] = Agente.objects.all().order_by('nombre')
+    if context.get('campañaSeleccionada'):
+        context['campañas'] = Campaña.objects.all().difference(context['campañaSeleccionada']).order_by('nombre')
+    else:
+        context['campañas'] = Campaña.objects.all().order_by('nombre')
     #altura = len(agentesNombre) * 12
     return render(request, 'graficos/grafico_V1.html',context)
 
@@ -666,3 +680,46 @@ def test(request, pk_campaña):
     funciones = Funcion.objects.filter(estado=1)
     funciones = funciones.difference(camp.fk_funciones.all())
     return render(request, 'test.html',{'camp':camp,'funciones':funciones})
+	
+@group_required(('Auditor Reportes', '/accounts/login/'))
+def analizarAudio(request, pk_audio):
+	a = Audio.objects.get(pk=pk_audio)
+	Reporte.objects.filter(fk_audio=a).delete()
+	data = {}
+	try:
+		funciones = a.campaña.fk_funciones.all()
+		for f in funciones:
+			e = Evaluador()
+			suma = e.ponderizar(a.canal_1.lower(), Palabras.objects.filter(fk_funcion=f))
+			canal_1_resaltado= a.canal_1
+			canal_1_resaltado = canal_1_resaltado.split(" ")
+			for palabra in Palabras.objects.filter(fk_funcion=f):
+				if palabra.palabra.lower() in canal_1_resaltado:
+					for indice,palabra_Canal_1 in enumerate(canal_1_resaltado):
+						if palabra.palabra.lower() == palabra_Canal_1:
+							canal_1_resaltado[indice] = palabra_Canal_1.replace(palabra.palabra.lower(),'<b>'+palabra.palabra.lower()+'</b>')
+			canal_1_resaltado = " ".join(canal_1_resaltado)
+			#analisis = random.randint(0, 100)
+			Reporte.objects.create(ponderacion=suma, 
+								fk_audio=a,
+								fk_funcion=f,
+								canal_1=canal_1_resaltado,
+								canal_2=a.canal_2,
+								nombre_agente = a.agente.nombre,
+								nombre_audio = a.idInteraccion,
+								nombre_campaña = a.campaña.nombre,
+								fecha_audio = a.inicio)
+		
+		pond = 0.00
+		cant = 0
+		for r in Reporte.objects.filter(fk_audio=a):
+			pond = pond + r.ponderacion
+			cant += 1
+		if cant != 0:
+			a.ponderacion = pond/cant
+		a.save()
+		data['analisis'] = True
+		return JsonResponse(data)
+	except:
+			data['analisis'] = False
+			return JsonResponse(data)
