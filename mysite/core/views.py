@@ -443,11 +443,11 @@ def transcripcion(request, pk_campaña, pk_analisis, pk_reporte):
 	
 	
 def reproducir(request, pk_audio):
-	original = "M:\\FreeLance\\Audios\\190810\\"
-	pathTMP = "M:\\FreeLance\\Biometria\\static\\media\\audios\\tmp\\"
+	pathTMP = "static/media/audios/tmp/"
 	audio = get_object_or_404(Audio,pk=pk_audio)
 	filename = audio.file.path.split("\\")[-1]
-	convertir = "M:\\FreeLance\\ffmpeg.exe   -acodec g729 -i " + original + filename + " -acodec pcm_s16le -y -f wav " + pathTMP + filename
+	original = "/mnt/mitrol/"+audio.file.path.split("\\")[-2]
+	convertir = "ffmpeg  -acodec g729 -i " + original + filename + " -acodec pcm_s16le -y -f wav " + pathTMP + filename
 	os.system(convertir)
 	#return redirect('reproducir.html', audio.file.path)
 	#return render(request,'reproducir.html',{'audio':audio})

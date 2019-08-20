@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from mysite.core.models import Audio, Agente, Campaña, Funcion, Palabras, Reporte
 import os, time, requests
-from datetime import datetime
+from datetime import datetime, date
 from mysite.core.transcriptor import Transcriptor
 from mysite.core.ponderacion import Evaluador
 from bs4 import BeautifulSoup
@@ -9,10 +9,6 @@ from bs4 import BeautifulSoup
 class Command(BaseCommand):
 	args = '<foo bar ...>'
 	help = 'our help string comes here'
-	pathhAudios = "M:\FreeLance\Audios\190810"
-	#path = 'M:\FreeLance\18-05\static\media\audios\files'
-	path = '/home/ubuntu/biometria/biometria/static/media/audios/files'
-	cantidad = ''
 
 	def _cargarReportes(self):
 		audios = Audio.objects.all()
@@ -54,15 +50,15 @@ class Command(BaseCommand):
 	
 	def _cargarAudios(self):
 		stats = open("stats.csv","w")
-		pathTMP = "M:\\FreeLance\\Biometria\\static\\media\\audios\\tmp\\"
+		pathTMP = "static/media/audios/tmp/"
 		t = Transcriptor()
 		e = Evaluador()
-		for r,d,files in os.walk("M:\\FreeLance\\Audios\\190810\\"):
+		for r,d,files in os.walk("/mnt/mitrol/"+str(date.today().strftime("%y%m%d"))):
 			for f in files:
 				filename = f 
 				original = os.path.join(r,f)
 				start_time = time.time()
-				convertir = "M:\\FreeLance\\ffmpeg.exe   -acodec g729 -i " + original + " -acodec pcm_s16le -f wav " + pathTMP + filename
+				convertir = "ffmpeg   -acodec g729 -i " + original + " -acodec pcm_s16le -f wav " + pathTMP + filename
 				os.system(convertir)
 				if Audio.objects.filter(idInteraccion=("_").join(f.split("_")[2:])[:-4]).exists():
 					audio = Audio.objects.get(idInteraccion=("_").join(f.split("_")[2:])[:-4])
@@ -92,8 +88,8 @@ class Command(BaseCommand):
 	def _cargarMetadatos(self):
 		user ="tod"
 		pw = "Tod2019*"
-		fecha_desde="20190810"
-		fecha_hasta="20190810"
+		fecha_desde=date.today().strftime("%y%m%d")
+		fecha_hasta=date.today().strftime("%y%m%d")
 		audios = Audio.objects.filter(procesado=False)
 		count = 0
 		for a in audios:
@@ -123,10 +119,9 @@ class Command(BaseCommand):
 				a.campaña = campaña
 				a.procesado = True
 				a.save()
-				#print (str(count) + " de " + str(len(audios)))
 				count += 1
 			except:
-				#print ("Error: " + a.idInteraccion)
+				pass
 	
 	def handle(self, *args, **options):
 		self._cargarMetadatos()
