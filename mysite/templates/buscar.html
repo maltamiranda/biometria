@@ -22,6 +22,10 @@ Inicio
             		"url": "{% static '/json/Spanish.json' %}"
         		}
     		} );
+			console.log($("#idPondMenor").find("label[for=id_ponderacion__lt]").text("Ponderacion menor que:"));
+			console.log($("#idPondMayor").find("label[for=id_ponderacion__gt]").text("Ponderacion mayor que:"));
+			console.log($("#idCampaña").find("label[for=id_campaña__nombre__icontains]").text("Campaña contiene:"));
+			console.log($("#idAgente").find("label[for=id_agente__nombre__icontains]").text("Agente contiene:"));
 
 		});
 		
@@ -100,15 +104,19 @@ Inicio
 		<div class="well">
 			<h4 style="margin-top: 0">Filtrar</h4>
 			<div class="row">
-				<div class="form-group col-sm-4 col-md-3" id="idPondBuscar">
+				<div class="form-group col-sm-4 col-md-3" id="idPondMenor">
 				    {{ filter.form.ponderacion__lt.label_tag }}
 				    {% render_field filter.form.ponderacion__lt class="form-control" %}
 				</div>
-				<div class="form-group col-sm-4 col-md-3">
+				<div class="form-group col-sm-4 col-md-3" id="idPondMayor">
+				    {{ filter.form.ponderacion__gt.label_tag }}
+				    {% render_field filter.form.ponderacion__gt class="form-control" %}
+				</div>
+				<div class="form-group col-sm-4 col-md-3" id="idCampaña">
 				    {{ filter.form.campaña__nombre__icontains.label_tag }}
 				    {% render_field filter.form.campaña__nombre__icontains class="form-control" %}
 				</div>
-                <div class="form-group col-sm-4 col-md-3">
+                <div class="form-group col-sm-4 col-md-3" id="idAgente">
 				    {{ filter.form.agente__nombre__icontains.label_tag }}
 				    {% render_field filter.form.agente__nombre__icontains class="form-control" %}
 				</div>

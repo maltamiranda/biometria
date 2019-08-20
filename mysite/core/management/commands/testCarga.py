@@ -61,12 +61,8 @@ class Command(BaseCommand):
 			for f in files:
 				filename = f 
 				original = os.path.join(r,f)
-				print (f.split("_")[2][0:12])
-				print (datetime.strptime(f.split("_")[2][0:12], "%y%m%d%H%M%S"))
-				print (("_").join(f.split("_")[2:])[:-4])
 				start_time = time.time()
 				convertir = "M:\\FreeLance\\ffmpeg.exe   -acodec g729 -i " + original + " -acodec pcm_s16le -f wav " + pathTMP + filename
-				print (convertir)
 				os.system(convertir)
 				if Audio.objects.filter(idInteraccion=("_").join(f.split("_")[2:])[:-4]).exists():
 					audio = Audio.objects.get(idInteraccion=("_").join(f.split("_")[2:])[:-4])
@@ -99,12 +95,10 @@ class Command(BaseCommand):
 		fecha_desde="20190810"
 		fecha_hasta="20190810"
 		audios = Audio.objects.filter(procesado=False)
-		print (len(audios))
 		count = 0
 		for a in audios:
 			try:
-				idInteraccion = a.idInteraccion#"190808080045444_IVR_06000"
-				print (a.idInteraccion)
+				idInteraccion = a.idInteraccion
 				parameter = "store%3dREP_RDL_GrabacionesBasico%23%23idPermiso%3dREPORTES_Grabaciones_Grabaciones+B%c3%a1sico%23%23Version%3d13%23%23col%3d%23%23Idioma%3des%23%23SizeWeb%3d300%23%23SizePrint%3d29.7%7c%7c21%7c%7ccm%23%23Orientacion%3dH%23%23Ocultar%3d4%7c%7c%23%23OrderBy%3dStartRec%23A%7c%7c%23%23UserId%3d1701%23%23PEXT_TipoSalidaRep%3d0%23%23PEXT_Query%3d%23%23PEXT_WS%3d1%7c%7c%23%23RDLC_RowsByPage%3d-1%23%23PEXT_MaxRow%3d15000%23%23RDLC_FormInt%3d0%23%23RDLC_Culture%3des-AR%23%23RDLC_strDateFormat%3ddd%2fMM%2fyyyy%23%23PEXT_FechaRango%3d1234567%7c%7c"+fecha_desde+"%7c%7c"+fecha_hasta+"%23%23PEXT_idEmpresa%3d-1%23%23PEXT_idCamp%3d-1%23%23PEXT_idLote%3d-1%23%23PEXT_idGrupo%3d-1%23%23PEXT_idAgente%3d-1%23%23PEXT_idCliente%3d%23%23PEXT_Cliente%3d%23%23PEXT_MinDuracion%3d00%3a00%3a00%23%23PEXT_MaxDuracion%3d00%3a00%3a00%23%23PEXT_idCRM%3d%23%23PEXT_ResultadoGestion%3d-1%23%23PEXT_idInteraccion%3d"+idInteraccion+"%23%23PEXT_Extension%3d%23%23PEXT_idSentido%3d-1%23%23RDLC_TipoContacto%3d-1%23%23RDLC_newWin%3d%23%23RDLC_newTabExcel%3d%23%23RDLC_ChatCompleto%3d%23%23RDLC_MailCompleto%3d%23%23RDLC_EstiloRep%3d0%23%23RDLC_DocumentMap%3d%23%23RDLC_win_width%3d640%23%23RDLC_win_height%3d480%23%23HIDD_fromExecuteSQL%3d%23%23brw%3dChrome%23%23brwver%3d76%23%23"
 				url = "http://mitrol.provincianet.com.ar/ws.asmx/MitrolWS_UserPass?Username="+user+"&Password="+pw+"&wsParameter="+parameter
 				r = requests.get(url=url)
@@ -129,10 +123,10 @@ class Command(BaseCommand):
 				a.campaña = campaña
 				a.procesado = True
 				a.save()
-				print (str(count) + " de " + str(len(audios)))
+				#print (str(count) + " de " + str(len(audios)))
 				count += 1
 			except:
-				print ("Error: " + a.idInteraccion)
+				#print ("Error: " + a.idInteraccion)
 	
 	def handle(self, *args, **options):
 		self._cargarMetadatos()

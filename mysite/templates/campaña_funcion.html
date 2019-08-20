@@ -129,14 +129,15 @@
 	</div>
 	
 	<div class="subject-info-box-1">
+	<h4>Funciones habilitadas</h4>
 	<select multiple="multiple" id='lstBox1' class="form-control" style="height:230px;">
 		{% for selec in funciones %}
 			<option value="{{selec.id}}">{{selec.nombre}} - <i>{{selec.descripcion}}</i></option>
 		{% endfor %}
 	</select>
 	</div>
-	
 	<div class="subject-info-arrows text-center">
+	<br><br>
 	<input type='button' id='btnAllRight' value='>>' class="btn btn-primary btn-sm btn-skip" style="width: 70%;"/><br><br>
 	<input type='button' id='btnRight' value='>' class="btn btn-primary btn-sm btn-skip" style="width: 70%;" /><br /><br>
 	<input type='button' id='btnLeft' value='<' class="btn btn-primary btn-sm btn-skip" style="width: 70%;" /><br /><br>
@@ -144,6 +145,7 @@
 	</div>
 	
 	<div class="subject-info-box-2">
+	<h4>Funciones ne campaña</h4>
 	<select multiple="multiple" id='lstBox2' class="form-control" style="height:230px;" name="funciones">
 		{% for selec in campaña.fk_funciones.all %}
 			<option value="{{selec.id}}">{{selec.nombre}} - <i>{{selec.descripcion}}</i></option>
