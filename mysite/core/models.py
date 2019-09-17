@@ -25,6 +25,7 @@ class Audio(models.Model):
 	campaña = models.ForeignKey(Campaña, related_name='campaña_audio', on_delete=models.CASCADE,default=None,blank=True,null=True)
 	canal_1 = models.TextField(max_length=10000, default="")
 	canal_2 = models.TextField(max_length=10000, default="")
+	canalOrdenado = models.TextField(max_length=25000, default="")
 	comentario = models.TextField(max_length=10000, default="")
 	ponderacion = models.FloatField(default=0)
 	procesado = models.BooleanField(default=False)
@@ -65,17 +66,7 @@ class Palabras(models.Model):
 	def __str__(self):
 		return self.palabra
 		
-#class Analisis(models.Model):
-#	created = models.DateTimeField(auto_now_add=True)
-#	funciones = models.ManyToManyField('Funcion',limit_choices_to = {'estado': 1})
-#	fk_campaña = models.ForeignKey(Campaña, related_name='fk_campaña', on_delete=models.CASCADE, default=None)
-#	
-#	def getFunciones(self):
-#		temp = ''
-#		for f in self.funciones.all():
-#			temp = temp+f.nombre+','
-#			
-#		return temp[:-1]
+
 		
 		
 class Reporte(models.Model):
@@ -84,8 +75,9 @@ class Reporte(models.Model):
 	fk_funcion = models.ForeignKey(Funcion, related_name='funcion_reporte', on_delete=models.CASCADE)
 	fk_audio = models.ForeignKey(Audio, related_name='audio', on_delete=models.CASCADE)
 	#fk_analisis = models.ForeignKey(Analisis, related_name='fk_analisis', on_delete=models.CASCADE,default=None)
-	canal_1 = models.TextField(max_length=10000, default="")
-	canal_2 = models.TextField(max_length=10000, default="")
+	#canal_1 = models.TextField(max_length=10000, default="")
+	#canal_2 = models.TextField(max_length=10000, default="")
+	canalOrdenado = models.TextField(max_length=25000, default="")
 	nombre_agente = models.CharField(max_length=255)
 	nombre_audio = models.CharField(max_length=255)
 	nombre_campaña = models.CharField(max_length=80,default=None)

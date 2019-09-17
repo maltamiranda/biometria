@@ -1,4 +1,4 @@
-import pdb, random, threading
+import pdb, random, threading, re
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseRedirect
+from unicodedata import normalize
 
 import os
 
@@ -138,15 +139,9 @@ def reporte_generado(request, pk_reporte):
     #Generar tabla con el texto trascripto
     contador = 0
     trans = []
-    c1 = reporte.canal_1.split("|")
-    c2 = reporte.canal_2.split("|")
-
-    if len(c1) == len(c2):
-        for i in range(len(c1)):
-            trans.append([str(contador) + "-" + str(contador+30),
-                            c1[i],
-                            c2[i]])
-            contador += 30
+    c = reporte.canalOrdenado.split("||")
+    for i in c:
+        trans.append(i.split("|"))
 
     return render(request, 'reporte_generado.html', {'reporte':reporte,
 													'campaña':campaña,
@@ -319,7 +314,7 @@ def campañas_detalle(request, pk_campaña):
         return redirect('campañas')
         
     funciones = Funcion.objects.filter(estado=1)
-    funciones = funciones.difference(campaña.fk_funciones.all())
+    funciones = funciones.exclude(id__in=campaña.fk_funciones.all())#funciones.difference(campaña.fk_funciones.all())
     return render(request, 'campaña_funcion.html', {'campaña':campaña,'funciones':funciones})
 	
 @group_required(('Auditor Campañas', '/accounts/login/'))
@@ -662,11 +657,11 @@ def graficoV1(request):
                 context['altura'] = len(agentes) * 24
 
     if context.get('agenteSeleccionado'):
-        context['agentes'] = Agente.objects.all().difference(context['agenteSeleccionado']).order_by('nombre')
+        context['agentes'] = Agente.objects.all().exclude(id__in=context['agenteSeleccionado']).order_by('nombre')#difference(context['agenteSeleccionado']).order_by('nombre')
     else:
         context['agentes'] = Agente.objects.all().order_by('nombre')
     if context.get('campañaSeleccionada'):
-        context['campañas'] = Campaña.objects.all().difference(context['campañaSeleccionada']).order_by('nombre')
+        context['campañas'] = Campaña.objects.all().exclude(id__in=context['campañaSeleccionada']).order_by('nombre')#difference(context['campañaSeleccionada']).order_by('nombre')
     else:
         context['campañas'] = Campaña.objects.all().order_by('nombre')
     #altura = len(agentesNombre) * 12
@@ -691,20 +686,46 @@ def analizarAudio(request, pk_audio):
 		for f in funciones:
 			e = Evaluador()
 			suma = e.ponderizar(a.canal_1.lower(), Palabras.objects.filter(fk_funcion=f))
-			canal_1_resaltado= a.canal_1
-			canal_1_resaltado = canal_1_resaltado.split(" ")
-			for palabra in Palabras.objects.filter(fk_funcion=f):
-				if palabra.palabra.lower() in canal_1_resaltado:
-					for indice,palabra_Canal_1 in enumerate(canal_1_resaltado):
-						if palabra.palabra.lower() == palabra_Canal_1:
-							canal_1_resaltado[indice] = palabra_Canal_1.replace(palabra.palabra.lower(),'<b>'+palabra.palabra.lower()+'</b>')
-			canal_1_resaltado = " ".join(canal_1_resaltado)
+			canalOrdenado_resaltado = a.canalOrdenado
+			canalOrdenado_resaltadoFinal = ""
+			canalOrdenado_resaltado = canalOrdenado_resaltado.split("||")[:-1]
+			for bloque in canalOrdenado_resaltado:
+				b = bloque.split("|")
+				if b[1] == "operador":
+					bloqueTrans = b[2]
+					bloqueTrans = bloqueTrans.lower()
+					# -> NFD y eliminar diacríticos
+					bloqueTrans = re.sub(
+							r"([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+", r"\1", 
+							normalize( "NFD", bloqueTrans), 0, re.I
+						)
+					# -> NFC
+					bloqueTrans = normalize( 'NFC', bloqueTrans).split(" ")
+					for palabra in Palabras.objects.filter(fk_funcion=f):
+						#if palabra.palabra.lower() in bloqueTrans:
+						for indice,palabra_Canal_1 in enumerate(bloqueTrans):
+							if palabra.palabra.lower() == palabra_Canal_1:
+								bloqueTrans[indice] = palabra_Canal_1.replace(palabra.palabra.lower(),'<b>'+palabra.palabra.lower()+'</b>')
+					bloqueTrans = " ".join(bloqueTrans)
+					canalOrdenado_resaltadoFinal = canalOrdenado_resaltadoFinal + b[0] + "|" + b[1] + "|" + bloqueTrans + "||"
+				else:
+					canalOrdenado_resaltadoFinal = canalOrdenado_resaltadoFinal + bloque + "||"
+			
+			
+			
+			#for palabra in Palabras.objects.filter(fk_funcion=f):
+			#	if palabra.palabra.lower() in canal_1_resaltado:
+			#		for indice,palabra_Canal_1 in enumerate(canal_1_resaltado):
+			#			if palabra.palabra.lower() == palabra_Canal_1:
+			#				canal_1_resaltado[indice] = palabra_Canal_1.replace(palabra.palabra.lower(),'<b>'+palabra.palabra.lower()+'</b>')
+			#canal_1_resaltado = " ".join(canal_1_resaltado)
 			#analisis = random.randint(0, 100)
 			Reporte.objects.create(ponderacion=suma, 
 								fk_audio=a,
 								fk_funcion=f,
-								canal_1=canal_1_resaltado,
-								canal_2=a.canal_2,
+								#canal_1=canal_1_resaltado,
+								#canal_2=a.canal_2,
+								canalOrdenado = canalOrdenado_resaltadoFinal[:-2],
 								nombre_agente = a.agente.nombre,
 								nombre_audio = a.idInteraccion,
 								nombre_campaña = a.campaña.nombre,
@@ -717,9 +738,12 @@ def analizarAudio(request, pk_audio):
 			cant += 1
 		if cant != 0:
 			a.ponderacion = pond/cant
+		else:
+			a.ponderacion = 0
 		a.save()
 		data['analisis'] = True
 		return JsonResponse(data)
-	except:
-			data['analisis'] = False
-			return JsonResponse(data)
+	except Exception as e:
+		print(e)
+		data['analisis'] = False
+		return JsonResponse(data)

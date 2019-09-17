@@ -4,9 +4,9 @@ from unicodedata import normalize
 
 class Evaluador(object):
 
-	def normalizar(self, lista):
+	def normalizar(self, cadena):
 
-		cadena = '|'.join(lista)
+		#cadena = '|'.join(lista)
 
 		cadena = cadena.lower()
 

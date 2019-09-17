@@ -74,6 +74,8 @@ class Command(BaseCommand):
                 cant += 1
             if cant != 0:
                 a.ponderacion = pond/cant
+            else:
+                a.ponderacion=0
             a.save()
 
     def handle(self, *args, **options):
