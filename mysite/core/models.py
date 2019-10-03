@@ -90,19 +90,7 @@ class Reporte(models.Model):
 	class Meta:
 		unique_together = (("fk_audio","fk_funcion"),)
 		#unique_together = (("fk_audio", "fk_analisis","fk_funcion"),)
-#class Lote(models.Model):
 
-
-	
-
-
-#class Campaña_Audio_Analisis(models.Model):
-#	analisis = models.IntegerField()
-#	fk_audio = models.ForeignKey(Audio, related_name='fk_audio_campaña', on_delete=models.CASCADE)
-#	fk_campaña_funcion = models.ForeignKey(Campaña_funciones, related_name='fk_campaña_funcion', on_delete=models.CASCADE,default=None)
-#	fk_funcion = models.ForeignKey(Funcion, related_name='fk_funcion', on_delete=models.CASCADE,default=None)
-#	fk_campaña = models.ForeignKey(Campaña, related_name='campaña', on_delete=models.CASCADE)
-#	
-#	class Meta:
-#		unique_together = (("fk_audio", "fk_campaña_funcion","fk_campaña","fk_funcion"),)
-#		
+class Hilo(models.Model):
+	ultimo = models.CharField(max_length=50, default="")
+	hilo = models.IntegerField()

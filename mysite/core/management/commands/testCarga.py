@@ -6,14 +6,16 @@ from mysite.core.transcriptor import Transcriptor
 from mysite.core.ponderacion import Evaluador
 from bs4 import BeautifulSoup
 from unicodedata import normalize
+from multiprocessing.dummy import Pool as ThreadPool
 
 class Command(BaseCommand):
 	args = '<foo bar ...>'
 	help = 'our help string comes here'
 
 	def _cargarReportes(self):
-		audios = Audio.objects.order_by("-idInteraccion")
-		for a in audios:
+		#audios = Audio.objects.order_by("-idInteraccion")
+		#for a in audios:
+			a = Audio.objects.last()
 			funciones = a.campaña.fk_funciones.all()
 			for f in funciones:
 				e = Evaluador()
@@ -24,22 +26,25 @@ class Command(BaseCommand):
 				for bloque in canalOrdenado_resaltado:
 					b = bloque.split("|")
 					if b[1] == "operador":
-						bloqueTrans = b[2]
-						bloqueTrans = bloqueTrans.lower()
-						# -> NFD y eliminar diacríticos
-						bloqueTrans = re.sub(
-								r"([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+", r"\1", 
-								normalize( "NFD", bloqueTrans), 0, re.I
-							)
-						# -> NFC
-						bloqueTrans = normalize( 'NFC', bloqueTrans).split(" ")
-						for palabra in Palabras.objects.filter(fk_funcion=f):
-							#if palabra.palabra.lower() in bloqueTrans:
-							for indice,palabra_Canal_1 in enumerate(bloqueTrans):
-								if palabra.palabra.lower() == palabra_Canal_1:
-									bloqueTrans[indice] = palabra_Canal_1.replace(palabra.palabra.lower(),'<b>'+palabra.palabra.lower()+'</b>')
-						bloqueTrans = " ".join(bloqueTrans)
-						canalOrdenado_resaltadoFinal = canalOrdenado_resaltadoFinal + b[0] + "|" + b[1] + "|" + bloqueTrans + "||"
+						try:
+							bloqueTrans = b[2]
+							bloqueTrans = bloqueTrans.lower()
+							# -> NFD y eliminar diacríticos
+							bloqueTrans = re.sub(
+									r"([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+", r"\1", 
+									normalize( "NFD", bloqueTrans), 0, re.I
+								)
+							# -> NFC
+							bloqueTrans = normalize( 'NFC', bloqueTrans).split(" ")
+							for palabra in Palabras.objects.filter(fk_funcion=f):
+								#if palabra.palabra.lower() in bloqueTrans:
+								for indice,palabra_Canal_1 in enumerate(bloqueTrans):
+									if palabra.palabra.lower() == palabra_Canal_1:
+										bloqueTrans[indice] = palabra_Canal_1.replace(palabra.palabra.lower(),'<b>'+palabra.palabra.lower()+'</b>')
+							bloqueTrans = " ".join(bloqueTrans)
+							canalOrdenado_resaltadoFinal = canalOrdenado_resaltadoFinal + b[0] + "|" + b[1] + "|" + bloqueTrans + "||"
+						except:
+							pass
 					else:
 						canalOrdenado_resaltadoFinal = canalOrdenado_resaltadoFinal + bloque + "||"
 				
@@ -64,46 +69,58 @@ class Command(BaseCommand):
 									fecha_audio = a.inicio)
 
 
-	def _cargarTranscripciones(self):
-		for audio in Audio.objects.filter(canalOrdenado=""):
-			try:
-				t = Transcriptor()
-				e = Evaluador()
-				c1, c2 , trans = t.parse(audio.file)
-				ch1 = e.normalizar(c1) 
-				ch2 = e.normalizar(c2)
-				audio.canal_1 = ch1
-				audio.canal_2 = ch2
-				audio.canalOrdenado = trans
-				audio.save()
-			except:
-				pass
-	
-	def _cargarAudios(self):
-		stats = open("stats.csv","w")
-		pathTMP = "static/media/audios/tmp/"
+	def _cargarTranscripciones(self, audio):
 		t = Transcriptor()
 		e = Evaluador()
-		for r,d,files in os.walk("/mnt/mitrol/"+str(date.today().strftime("%y%m%d"))):
-			for f in files:
-				filename = f 
-				original = os.path.join(r,f)
-				start_time = time.time()
-				convertir = "ffmpeg   -acodec g729 -i " + original + " -acodec pcm_s16le -f wav " + pathTMP + filename
-				os.system(convertir)
-				if Audio.objects.filter(idInteraccion=("_").join(f.split("_")[2:])[:-4]).exists():
-					audio = Audio.objects.get(idInteraccion=("_").join(f.split("_")[2:])[:-4])
+		c1, c2 , trans = t.parse(audio.file)
+		ch1 = e.normalizar(c1) 
+		ch2 = e.normalizar(c2)
+		audio.canal_1 = ch1
+		audio.canal_2 = ch2
+		audio.canalOrdenado = trans
+		audio.save()
+	def _cargarAudios(self):
+		pathTMP = "static/media/audios/tmp/"
+		hoy = datetime.today().date()
+		ultimo = ""
+		t = Transcriptor()
+		e = Evaluador()
+		for r,d,files in os.walk("M:/FreeLance/Audios/290910"):
+			filesOrdenados = sorted(files, key = lambda str: int(str.split('_')[2]))
+			if ultimo == "":
+				files_aProcesar = files
+			else:
+				if filesOrdenados[-1] == ultimo:
+					time.sleep(600)
+					break
 				else:
-					audio = Audio.objects.create(inicio=datetime.strptime(f.split("_")[2][0:12], "%y%m%d%H%M%S"), idInteraccion=("_").join(f.split("_")[2:])[:-4],fileOriginal=os.path.join(r,f), file="audios/tmp/"+filename)
-				c1, c2 = t.parse(audio.file)
-				ch1 = e.normalizar(c1) 
-				ch2 = e.normalizar(c2)
-				audio.canal_1 = ch1
-				audio.canal_2 = ch2
-				audio.save()
-				elapsed_time = time.time() - start_time
-				stats.write(str(start_time)+"|"+str(elapsed_time)+"\n")
-		stats.close()
+					files_aProcesar = filesOrdenados[filesOrdenados.index(ultimo)+1:]
+			for f in files_aProcesar[:50]:
+				#try:
+					if f[-3:] == "wav":
+						t = Transcriptor()
+						e = Evaluador()
+						if True:#int(f.split("_")[2]) % 4 == 1:
+							filename = f 
+							original = os.path.join(r,f)
+							convertir = "ffmpeg   -acodec g729 -i " + original + " -acodec pcm_s16le -f wav " + pathTMP + filename
+							print (convertir)
+							os.system(convertir)
+							if Audio.objects.filter(idInteraccion=("_").join(f.split("_")[2:])[:-4]).exists():
+								audio = Audio.objects.get(idInteraccion=("_").join(f.split("_")[2:])[:-4])
+							else:
+								audio = Audio.objects.create(inicio=datetime.strptime(f.split("_")[2][0:12], "%y%m%d%H%M%S"), idInteraccion=("_").join(f.split("_")[2:])[:-4],fileOriginal=os.path.join(r,f), file="audios/tmp/"+filename)
+								c1, c2, trans = t.parse(audio.file)
+								ch1 = e.normalizar(c1) 
+								ch2 = e.normalizar(c2)
+								audio.canal_1 = ch1
+								audio.canal_2 = ch2
+								audio.canalOrdenado = trans
+								audio.procesado = False
+								audio.save()
+					ultimo = f
+				#except:
+				#	pass
 		
 	def _cargarPonderacionAudio(self):
 		audios = Audio.objects.all()
@@ -122,8 +139,8 @@ class Command(BaseCommand):
 	def _cargarMetadatos(self):
 		user ="tod"
 		pw = "Tod2019*"
-		fecha_desde=date.today().strftime("%y%m%d")
-		fecha_hasta=date.today().strftime("%y%m%d")
+		fecha_desde="190929"
+		fecha_hasta="190929"
 		audios = Audio.objects.filter(procesado=False)
 		count = 0
 		for a in audios:
@@ -157,9 +174,13 @@ class Command(BaseCommand):
 			except:
 				pass
 	
+	def _cargarTranscripcionesParalelo(self, audios, threads=2):
+		pool = ThreadPool(threads)
+		results = pool.map(self._cargarTranscripciones, audios)
+		pool.close()
+		pool.join()
+	
 	def handle(self, *args, **options):
-		#self._cargarMetadatos()
-		#self._cargarTranscripciones()
-		Reporte.objects.all().delete()
-		self._cargarReportes()
-		self._cargarPonderacionAudio()
+		self._cargarAudios()
+		self._cargarMetadatos()
+		#self._cargarReportes()
